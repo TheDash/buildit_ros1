@@ -2,6 +2,8 @@
 #define MYVIZ_H
 
 #include <QWidget>
+#include <moveit/robot_state_rviz_plugin/robot_state_display.h>
+#include <rviz/view_manager.h>
 
 namespace rviz
 {
@@ -17,6 +19,7 @@ class MyViz: public QWidget
 Q_OBJECT
 public:
   MyViz( QWidget* parent = 0 );
+  moveit_rviz_plugin::RobotStateDisplay* robot_state_display_;
   virtual ~MyViz();
 
 private Q_SLOTS:
