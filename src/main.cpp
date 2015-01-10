@@ -12,7 +12,6 @@ int main(int argc, char *argv[])
     // TODO Embed Rviz frame. 
 
     QApplication a(argc, argv);
-    MyViz* myviz = new MyViz();
     MainWindow w;
     w.show();
     

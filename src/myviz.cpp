@@ -36,7 +36,7 @@
 #include "rviz/render_panel.h"
 #include "rviz/display.h"
 
-#include <robot_mod_rviz_plugin/myviz.h>
+#include <buildit_ros/myviz.h>
 
 // BEGIN_TUTORIAL
 // Constructor for MyViz.  This does most of the work of the class.

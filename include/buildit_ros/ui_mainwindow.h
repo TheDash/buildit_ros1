@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'mainwindow.ui'
 **
-** Created: Fri Jan 9 21:50:30 2015
+** Created: Fri Jan 9 23:25:21 2015
 **      by: Qt User Interface Compiler version 4.8.1
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
@@ -15,6 +15,7 @@
 #include <QtGui/QApplication>
 #include <QtGui/QButtonGroup>
 #include <QtGui/QFrame>
+#include <QtGui/QHBoxLayout>
 #include <QtGui/QHeaderView>
 #include <QtGui/QLabel>
 #include <QtGui/QLineEdit>
@@ -29,6 +30,7 @@
 #include <QtGui/QToolBar>
 #include <QtGui/QTreeView>
 #include <QtGui/QWidget>
+#include <buildit_ros/myviz.h>
 
 QT_BEGIN_NAMESPACE
 
@@ -36,15 +38,17 @@ class Ui_MainWindow
 {
 public:
     QWidget *centralWidget;
+    QWidget *horizontalLayoutWidget;
+    QHBoxLayout *horizontalLayout;
     QTabWidget *tabWidget;
     QWidget *mount_points_tab;
     QTextBrowser *textBrowser;
-    QLabel *label_2;
     QListView *listView_3;
     QLabel *label_3;
     QPushButton *pushButton;
     QPushButton *pushButton_2;
     QTreeView *treeView;
+    QLabel *label_2;
     QWidget *tab_2;
     QLabel *label_4;
     QPushButton *pushButton_3;
@@ -59,7 +63,8 @@ public:
     QTextBrowser *textBrowser_3;
     QPushButton *pushButton_7;
     QPushButton *pushButton_8;
-    QWidget *tab_3;
+    QWidget *horizontalLayoutWidget_2;
+    QHBoxLayout *horizontalLayout_2;
     QFrame *visualizationFrame;
     QLabel *label;
     QMenuBar *menuBar;
@@ -73,9 +78,17 @@ public:
         MainWindow->resize(927, 544);
         centralWidget = new QWidget(MainWindow);
         centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
-        tabWidget = new QTabWidget(centralWidget);
+        horizontalLayoutWidget = new QWidget(centralWidget);
+        horizontalLayoutWidget->setObjectName(QString::fromUtf8("horizontalLayoutWidget"));
+        horizontalLayoutWidget->setGeometry(QRect(10, 0, 591, 501));
+        horizontalLayout = new QHBoxLayout(horizontalLayoutWidget);
+        horizontalLayout->setSpacing(6);
+        horizontalLayout->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
+        horizontalLayout->setContentsMargins(0, 0, 0, 0);
+        tabWidget = new QTabWidget(horizontalLayoutWidget);
         tabWidget->setObjectName(QString::fromUtf8("tabWidget"));
-        tabWidget->setGeometry(QRect(10, 10, 591, 471));
+        tabWidget->setEnabled(true);
         tabWidget->setLayoutDirection(Qt::LeftToRight);
         tabWidget->setTabPosition(QTabWidget::North);
         tabWidget->setTabShape(QTabWidget::Rounded);
@@ -85,9 +98,6 @@ public:
         textBrowser = new QTextBrowser(mount_points_tab);
         textBrowser->setObjectName(QString::fromUtf8("textBrowser"));
         textBrowser->setGeometry(QRect(80, 350, 441, 81));
-        label_2 = new QLabel(mount_points_tab);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-        label_2->setGeometry(QRect(100, 30, 141, 21));
         listView_3 = new QListView(mount_points_tab);
         listView_3->setObjectName(QString::fromUtf8("listView_3"));
         listView_3->setGeometry(QRect(340, 60, 231, 281));
@@ -103,6 +113,9 @@ public:
         treeView = new QTreeView(mount_points_tab);
         treeView->setObjectName(QString::fromUtf8("treeView"));
         treeView->setGeometry(QRect(10, 60, 241, 281));
+        label_2 = new QLabel(mount_points_tab);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+        label_2->setGeometry(QRect(90, 30, 141, 21));
         tabWidget->addTab(mount_points_tab, QString());
         tab_2 = new QWidget();
         tab_2->setObjectName(QString::fromUtf8("tab_2"));
@@ -155,17 +168,33 @@ public:
         pushButton_8->setObjectName(QString::fromUtf8("pushButton_8"));
         pushButton_8->setGeometry(QRect(510, 400, 71, 27));
         tabWidget->addTab(tab, QString());
-        tab_3 = new QWidget();
-        tab_3->setObjectName(QString::fromUtf8("tab_3"));
-        tabWidget->addTab(tab_3, QString());
-        visualizationFrame = new QFrame(centralWidget);
+
+        horizontalLayout->addWidget(tabWidget);
+
+        horizontalLayoutWidget_2 = new QWidget(centralWidget);
+        horizontalLayoutWidget_2->setObjectName(QString::fromUtf8("horizontalLayoutWidget_2"));
+        horizontalLayoutWidget_2->setGeometry(QRect(600, 0, 331, 501));
+        horizontalLayout_2 = new QHBoxLayout(horizontalLayoutWidget_2);
+        horizontalLayout_2->setSpacing(6);
+        horizontalLayout_2->setContentsMargins(11, 11, 11, 11);
+        horizontalLayout_2->setObjectName(QString::fromUtf8("horizontalLayout_2"));
+        horizontalLayout_2->setContentsMargins(0, 0, 0, 0);
+
+        MyViz *myviz = new MyViz(centralWidget);
+        myviz->setGeometry(QRect(600, 0, 331, 501));
+	//myviz->setFrameShape(QFrame::StyledPanel);
+ 
+        /*visualizationFrame = new QFrame(horizontalLayoutWidget_2);
         visualizationFrame->setObjectName(QString::fromUtf8("visualizationFrame"));
-        visualizationFrame->setGeometry(QRect(610, 40, 311, 441));
         visualizationFrame->setFrameShape(QFrame::StyledPanel);
-        visualizationFrame->setFrameShadow(QFrame::Raised);
-        label = new QLabel(centralWidget);
+        visualizationFrame->setFrameShadow(QFrame::Raised);*/
+
+        label = new QLabel(horizontalLayoutWidget_2);
         label->setObjectName(QString::fromUtf8("label"));
-        label->setGeometry(QRect(720, 0, 251, 20));
+        label->setGeometry(QRect(130, 20, 251, 20));
+
+       // horizontalLayout_2->addWidget(visualizationFrame);
+
         MainWindow->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(MainWindow);
         menuBar->setObjectName(QString::fromUtf8("menuBar"));
@@ -180,7 +209,7 @@ public:
 
         retranslateUi(MainWindow);
 
-        tabWidget->setCurrentIndex(0);
+        tabWidget->setCurrentIndex(3);
 
 
         QMetaObject::connectSlotsByName(MainWindow);
@@ -194,10 +223,10 @@ public:
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\">Turn a link into a mount point. The links below are all of the links in the robot. Select the link and add it to the mount point area by pressing the arrow. Added mount points will be highlighted in the robot model and labelled by their mount number. </p></body></html>", 0, QApplication::UnicodeUTF8));
-        label_2->setText(QApplication::translate("MainWindow", "Robot links", 0, QApplication::UnicodeUTF8));
         label_3->setText(QApplication::translate("MainWindow", "Mount points", 0, QApplication::UnicodeUTF8));
         pushButton->setText(QApplication::translate("MainWindow", "Mount", 0, QApplication::UnicodeUTF8));
         pushButton_2->setText(QApplication::translate("MainWindow", "Unmount", 0, QApplication::UnicodeUTF8));
+        label_2->setText(QApplication::translate("MainWindow", "Robot links", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(mount_points_tab), QApplication::translate("MainWindow", "Step 1: Mount Points", 0, QApplication::UnicodeUTF8));
         label_4->setText(QApplication::translate("MainWindow", "Add Sensors via URDF", 0, QApplication::UnicodeUTF8));
         pushButton_3->setText(QApplication::translate("MainWindow", "Browse", 0, QApplication::UnicodeUTF8));
@@ -223,7 +252,6 @@ public:
         pushButton_7->setText(QApplication::translate("MainWindow", "Export Robot Description", 0, QApplication::UnicodeUTF8));
         pushButton_8->setText(QApplication::translate("MainWindow", "Exit", 0, QApplication::UnicodeUTF8));
         tabWidget->setTabText(tabWidget->indexOf(tab), QApplication::translate("MainWindow", "Step 3: Confirm Robot", 0, QApplication::UnicodeUTF8));
-        tabWidget->setTabText(tabWidget->indexOf(tab_3), QApplication::translate("MainWindow", "Step 4: Export Robot", 0, QApplication::UnicodeUTF8));
         label->setText(QApplication::translate("MainWindow", "Robot Model", 0, QApplication::UnicodeUTF8));
     } // retranslateUi
 

@@ -17,11 +17,13 @@ add_definitions(-DQT_NO_KEYWORDS)
 qt4_wrap_cpp(MOC_FILES
     include/${PROJECT_NAME}/mainwindow.h
     include/${PROJECT_NAME}/ui_mainwindow.h
+    include/${PROJECT_NAME}/myviz.h
 )
 
 set(SOURCE_FILES
     src/main.cpp
     src/mainwindow.cpp
+    src/myviz.cpp
     ${MOC_FILES}
 )
 
