@@ -44,32 +44,32 @@ MyViz::MyViz( QWidget* parent )
   : QWidget( parent )
 {
   // Construct and lay out labels and slider controls.
-  QLabel* thickness_label = new QLabel( "Line Thickness" );
-  QSlider* thickness_slider = new QSlider( Qt::Horizontal );
-  thickness_slider->setMinimum( 1 );
-  thickness_slider->setMaximum( 100 );
-  QLabel* cell_size_label = new QLabel( "Cell Size" );
-  QSlider* cell_size_slider = new QSlider( Qt::Horizontal );
-  cell_size_slider->setMinimum( 1 );
-  cell_size_slider->setMaximum( 100 );
-  QGridLayout* controls_layout = new QGridLayout();
-  controls_layout->addWidget( thickness_label, 0, 0 );
-  controls_layout->addWidget( thickness_slider, 0, 1 );
-  controls_layout->addWidget( cell_size_label, 1, 0 );
-  controls_layout->addWidget( cell_size_slider, 1, 1 );
+  //QLabel* thickness_label = new QLabel( "Line Thickness" );
+  //QSlider* thickness_slider = new QSlider( Qt::Horizontal );
+  //thickness_slider->setMinimum( 1 );
+  //thickness_slider->setMaximum( 100 );
+  //QLabel* cell_size_label = new QLabel( "Cell Size" );
+  //QSlider* cell_size_slider = new QSlider( Qt::Horizontal );
+  //cell_size_slider->setMinimum( 1 );
+  //cell_size_slider->setMaximum( 100 );
+  //QGridLayout* controls_layout = new QGridLayout();
+  //controls_layout->addWidget( thickness_label, 0, 0 );
+  //controls_layout->addWidget( thickness_slider, 0, 1 );
+  //controls_layout->addWidget( cell_size_label, 1, 0 );
+  //controls_layout->addWidget( cell_size_slider, 1, 1 );
 
   // Construct and lay out render panel.
   render_panel_ = new rviz::RenderPanel();
   QVBoxLayout* main_layout = new QVBoxLayout;
-  main_layout->addLayout( controls_layout );
+  //main_layout->addLayout( controls_layout );
   main_layout->addWidget( render_panel_ );
 
   // Set the top-level layout for this MyViz widget.
   setLayout( main_layout );
 
   // Make signal/slot connections.
-  connect( thickness_slider, SIGNAL( valueChanged( int )), this, SLOT( setThickness( int )));
-  connect( cell_size_slider, SIGNAL( valueChanged( int )), this, SLOT( setCellSize( int )));
+  //connect( thickness_slider, SIGNAL( valueChanged( int )), this, SLOT( setThickness( int )));
+  //connect( cell_size_slider, SIGNAL( valueChanged( int )), this, SLOT( setCellSize( int )));
 
   // Next we initialize the main RViz classes.
   //
@@ -100,8 +100,8 @@ MyViz::MyViz( QWidget* parent )
   ROS_INFO("Current reference frame %s", grid_->subProp("Reference Frame")->getValue().toString().toStdString().c_str());
 
   // Initialize the slider values.
-  thickness_slider->setValue( 25 );
-  cell_size_slider->setValue( 10 );
+  //thickness_slider->setValue( 25 );
+  //cell_size_slider->setValue( 10 );
 }
 
 // Destructor.
