@@ -22,11 +22,13 @@ StartScreen::StartScreen(QWidget *parent)
    //centralLayout = new QHBoxLayout;
   
    // Add Tab widget for left horizontal layout
-   tab_widget = new StartScreenTabWidget;
 
    // Add Display widget for right horizontal layout.
    StartScreen::visualizationDisplay = new MyViz;
    StartScreen::visualizationDisplay->setGeometry(QRect(600, 0, 331, 501));
+
+   // Tabs must be initialized after the viz display or else segfault occurs. The tabs depend on display's vars.
+   tab_widget = new StartScreenTabWidget;
 
    centralLayout->addWidget(tab_widget);
    centralLayout->addWidget(StartScreen::visualizationDisplay);

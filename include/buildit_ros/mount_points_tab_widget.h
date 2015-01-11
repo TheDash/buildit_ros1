@@ -22,8 +22,8 @@ Q_OBJECT
         QTableWidget * selected_links_table;
         void load_robot_links();
  
-        const std::vector<const robot_model::LinkModel*> links;
-        const std::vector<const robot_model::LinkModel*> mount_point_links;
+        std::vector<const robot_model::LinkModel*> links;
+        std::vector<const robot_model::LinkModel*> mount_point_links;
 
 };
 #endif

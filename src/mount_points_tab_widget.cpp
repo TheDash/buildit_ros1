@@ -16,6 +16,32 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     text_block->setAlignment(Qt::AlignCenter);
 
     this->load_robot_links();
+    /*ROS_INFO("Loaded links");
+
+    // Create the list of available links widget;
+    int row_count;
+    row_count = this->links.size();
+    
+    if (!this->links.empty())
+    {
+	    this->links_table = new QTableWidget(row_count, 1, this);
+	    ROS_INFO("Creating data table..");
+	    
+	    // Load the QTableWidget
+	    for (int i = 0; i < row_count; i++)
+	    {
+		const robot_model::LinkModel* link_model = this->links.at(i);
+		std::string link_name = link_model->getName();
+		ROS_INFO("Found link: %s ... Loading ... ", link_name.c_str());
+		
+		// Create the table item. 
+		QTableWidgetItem * entry = new QTableWidgetItem(QString(QString::fromStdString(link_name)));
+		this->links_table->setItem(i, 0, entry);
+    }
+    } else
+    {
+       ROS_WARN("No robot model loaded.. Please load a robot model.");
+    }*/
 }
 
 
@@ -24,13 +50,19 @@ MountPointsTabWidget::~MountPointsTabWidget()
 
 }
 
+
 void MountPointsTabWidget::load_robot_links()
 {
    // Get the kinematic model from the display
+   if (StartScreen::visualizationDisplay != NULL)
+   {
+      
+   } else
+   {
+       ROS_WARN("The display has not been initialized yet...");
+   }
    robot_model::RobotModelConstPtr display_model = StartScreen::visualizationDisplay->robot_state_display_->getRobotModel();
-   const std::vector<const robot_model::LinkModel*> links = display_model->getLinkModels();
-
-   
+   //this->links = display_model->getLinkModels();
    // 
 }
 
