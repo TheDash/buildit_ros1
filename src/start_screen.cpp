@@ -13,16 +13,21 @@ StartScreen::StartScreen(QWidget *parent)
    // Added central widget that the layouts will connect to
    centralWidget = new QWidget;
    centralWidget->resize(1000, 600);
+   
+   centralLayout = new QHBoxLayout;
 
    //centralLayout = new QHBoxLayout;
   
    // Add Tab widget for left horizontal layout
-   tab_widget = new StartScreenTabWidget(centralWidget);
+   tab_widget = new StartScreenTabWidget;
 
    // Add Display widget for right horizontal layout.
-   visualizationDisplay = new MyViz(centralWidget);
+   visualizationDisplay = new MyViz;
    visualizationDisplay->setGeometry(QRect(600, 0, 331, 501));
 
+   centralLayout->addWidget(tab_widget);
+   centralLayout->addWidget(visualizationDisplay);
+   centralWidget->setLayout(centralLayout);
    this->setCentralWidget(centralWidget);
    //this->setLayout(centralLayout);
    //this->setVisible(true);
