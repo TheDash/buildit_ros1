@@ -1,6 +1,9 @@
 #include <buildit_ros/start_screen.h>
 //#include <buildit_ros/ui_mainwindow.h>
 
+//public static
+MyViz * StartScreen::visualizationDisplay;
+
 // Start screen initialization for buildit_ros
 StartScreen::StartScreen(QWidget *parent)
 {
@@ -22,11 +25,11 @@ StartScreen::StartScreen(QWidget *parent)
    tab_widget = new StartScreenTabWidget;
 
    // Add Display widget for right horizontal layout.
-   visualizationDisplay = new MyViz;
-   visualizationDisplay->setGeometry(QRect(600, 0, 331, 501));
+   StartScreen::visualizationDisplay = new MyViz;
+   StartScreen::visualizationDisplay->setGeometry(QRect(600, 0, 331, 501));
 
    centralLayout->addWidget(tab_widget);
-   centralLayout->addWidget(visualizationDisplay);
+   centralLayout->addWidget(StartScreen::visualizationDisplay);
    centralWidget->setLayout(centralLayout);
    this->setCentralWidget(centralWidget);
    this->showMaximized();

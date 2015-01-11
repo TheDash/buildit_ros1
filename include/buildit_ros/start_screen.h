@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef START_SCREEN_H
+#define START_SCREEN_H
 
 #include <QMainWindow>
 #include <QtCore/QVariant>
@@ -26,9 +26,6 @@
 #include <buildit_ros/start_screen_tab_widget.h>
 QT_BEGIN_NAMESPACE
 
-namespace Ui {
-class MainWindow;
-}
 
 class StartScreen : public QMainWindow
 {
@@ -39,13 +36,14 @@ public:
     // Functions
     explicit StartScreen(QWidget *parent = 0);
     ~StartScreen();
+    static MyViz * visualizationDisplay;
+
 private:
 
 
     // New fields
     QHBoxLayout * centralLayout;
     StartScreenTabWidget * tab_widget;
-    MyViz * visualizationDisplay;
 
     // Fields
     QWidget *centralWidget;
@@ -82,5 +80,4 @@ private:
     QToolBar *mainToolBar;
     QStatusBar *statusBar;
 };
-
 #endif // MAINWINDOW_H
