@@ -56,13 +56,21 @@ void MountPointsTabWidget::load_robot_links()
    // Get the kinematic model from the display
    if (StartScreen::visualizationDisplay != NULL)
    {
-      
-   } else
+	   robot_model::RobotModelConstPtr display_model = 	StartScreen::visualizationDisplay->robot_state_display_->getRobotModel();
+
+           if (display_model)
+           {
+	           this->links = display_model->getLinkModels();
+		   ROS_INFO("Got link models from display..");
+           } 
+           else
+           {
+                   ROS_WARN("No robot has been loaded. Please load a robot.");
+           }
+   } 
+   else
    {
        ROS_WARN("The display has not been initialized yet...");
    }
-   robot_model::RobotModelConstPtr display_model = StartScreen::visualizationDisplay->robot_state_display_->getRobotModel();
-   //this->links = display_model->getLinkModels();
-   // 
 }
 
