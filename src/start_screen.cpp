@@ -29,6 +29,7 @@ StartScreen::StartScreen(QWidget *parent)
    centralLayout->addWidget(visualizationDisplay);
    centralWidget->setLayout(centralLayout);
    this->setCentralWidget(centralWidget);
+   this->showMaximized();
    //this->setLayout(centralLayout);
    //this->setVisible(true);
 /*

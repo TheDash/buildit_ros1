@@ -8,6 +8,9 @@ StartScreenTabWidget::StartScreenTabWidget(QWidget * parent) : QTabWidget(parent
         this->setTabPosition(QTabWidget::North);
         this->setTabShape(QTabWidget::Rounded);
 
+        addMountPointsTabWidget();
+        addSensorsTabWidget();
+        addExportRobotTabWidget();
         // Add the widgets to the tab widget
 }
  
