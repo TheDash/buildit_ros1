@@ -15,15 +15,22 @@ include(${QT_USE_FILE})
 add_definitions(-DQT_NO_KEYWORDS)
 
 qt4_wrap_cpp(MOC_FILES
-    include/${PROJECT_NAME}/mainwindow.h
-    include/${PROJECT_NAME}/ui_mainwindow.h
+    include/${PROJECT_NAME}/start_screen.h
     include/${PROJECT_NAME}/myviz.h
+    include/${PROJECT_NAME}/start_screen_tab_widget.h
+    include/${PROJECT_NAME}/add_sensors_tab_widget.h
+    include/${PROJECT_NAME}/mount_points_tab_widget.h
+    include/${PROJECT_NAME}/export_robot_tab_widget.h
 )
 
 set(SOURCE_FILES
     src/main.cpp
-    src/mainwindow.cpp
+    src/start_screen.cpp
     src/myviz.cpp
+    src/start_screen_tab_widget.cpp
+    src/add_sensors_tab_widget.cpp
+    src/mount_points_tab_widget.cpp
+    src/export_robot_tab_widget.cpp
     ${MOC_FILES}
 )
 

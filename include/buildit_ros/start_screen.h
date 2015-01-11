@@ -23,7 +23,7 @@
 #include <QtGui/QTreeView>
 #include <QtGui/QWidget>
 #include <buildit_ros/myviz.h>
-
+#include <buildit_ros/start_screen_tab_widget.h>
 QT_BEGIN_NAMESPACE
 
 namespace Ui {
@@ -38,8 +38,15 @@ public:
 
     // Functions
     explicit StartScreen(QWidget *parent = 0);
-    ~MainWindow();
+    ~StartScreen();
 private:
+
+
+    // New fields
+    QHBoxLayout * centralLayout;
+    StartScreenTabWidget * tab_widget;
+    MyViz * visualizationDisplay;
+
     // Fields
     QWidget *centralWidget;
     QWidget *horizontalLayoutWidget;
