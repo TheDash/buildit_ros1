@@ -25,7 +25,9 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
 
     //TODO allow mounting buttons to move things over. [Done]
     //TODO make the mount points highlight links in the display
-    // this means that everything in the selected links list will highlight something in the display
+    // this means that everything in the selected links list will highlight something in the display. [Done]
+    //TODO Add URDF files/sensors/meshes that will be mounted to the robot. Drag and drop? Auto updating?
+    //TODO. Why is selecting mount points necessary? It's not really. Adding parts/sensors to the robot should be freeform. But it helps the user with the thought process of finding a place to mount to. Ideally this should be a base robot and have the ability to mount parts on it later. User should be able to load .stl/.dae files and the tool spawns them in the scene. The user should be able to pick where they want to attach that to the robot. 
 }
 
 
