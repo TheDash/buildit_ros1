@@ -22,31 +22,8 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     this->create_selected_mount_points_table_widget();
     this->create_mount_button();
     this->create_unmount_button();
-    // Create the list of available links widget;
-    
-    /*int row_count;
-    row_count = this->links.size();
-    
-    if (!this->links.empty())
-    {
-	    this->links_table = new QTableWidget(row_count, 1, this);
-	    ROS_INFO("Creating data table..");
-	    
-	    // Load the QTableWidget
-	    for (int i = 0; i < row_count; i++)
-	    {
-		const robot_model::LinkModel* link_model = this->links.at(i);
-		std::string link_name = link_model->getName();
-		ROS_INFO("Found link: %s ... Loading ... ", link_name.c_str());
-		
-		// Create the table item. 
-		QTableWidgetItem * entry = new QTableWidgetItem(QString(QString::fromStdString(link_name)));
-		this->links_table->setItem(i, 0, entry);
-    }
-    } else
-    {
-       ROS_WARN("No robot model loaded.. Please load a robot model.");
-    }*/
+
+    //TODO allow mounting buttons to move things over. 
 }
 
 
@@ -88,10 +65,10 @@ void MountPointsTabWidget::create_mount_points_table_widget()
 
 void MountPointsTabWidget::create_selected_mount_points_table_widget()
 {
-    int row_count;
-    row_count = this->links.size();
+  //  int row_count;
+  //  row_count = this->links.size();
 
-    this->selected_links_table = new QTableWidget(row_count, 1, this);
+    this->selected_links_table = new QTableWidget(0, 1, this);
     ROS_INFO("Creating selection table..");
     this->selected_links_table->setGeometry(QRect(600, 300, 400, 400));
     this->selected_links_table->horizontalHeader()->setStretchLastSection(true);
@@ -105,12 +82,41 @@ void MountPointsTabWidget::create_mount_button()
   this->mount_button = new QPushButton(">", this);
   this->mount_button->setGeometry(QRect(470, 450, 70, 40));
 
+  // Associate button with function call
+  connect(this->mount_button, SIGNAL(clicked()), this, SLOT(mount_button_clicked()));
+
+}
+
+// Takes selected links from list and adds it to selected table.
+void MountPointsTabWidget::mount_button_clicked()
+{
+    QList<QTableWidgetItem*> selected_links = this->links_table->selectedItems();
+
+    for (int i = 0; i < selected_links.size(); i++)
+    {
+        
+        // Add to mount points table if not already in it.
+        this->selected_links_table->insertRow(0);
+        QTableWidgetItem * newItem = selected_links[i]->clone();
+        this->selected_links_table->setItem(0, 0, newItem);
+        //links_to_be_added[i] = found_link;
+        //this->links_table->removeRow(i);
+        //this->selected_links_table->setItem(0, 0, found_link);
+    }
+
+}
+
+void MountPointsTabWidget::unmount_button_clicked()
+{
+
 }
 
 void MountPointsTabWidget::create_unmount_button()
 {
   this->unmount_button = new QPushButton("<", this);
   this->unmount_button->setGeometry(QRect(470, 500, 70, 40));
+
+   connect(this->unmount_button, SIGNAL(clicked()), this, SLOT(unmount_button_clicked()));
 
 }
 

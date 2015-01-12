@@ -6,6 +6,7 @@
 #include <QString>
 #include <QLabel>
 #include <QTableWidget>
+#include <QList>
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_model/link_model.h>
 
@@ -29,9 +30,12 @@ Q_OBJECT
         void create_selected_mount_points_table_widget();
         void create_mount_button();
         void create_unmount_button();
-
         std::vector<const robot_model::LinkModel*> links;
         std::vector<const robot_model::LinkModel*> mount_point_links;
+   private Q_SLOTS:
+        void mount_button_clicked();
+        void unmount_button_clicked();
+
 
 };
 #endif
