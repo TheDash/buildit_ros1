@@ -18,10 +18,18 @@ Q_OBJECT
 
     private:
         QPushButton * load_urdf_button;
+        QPushButton * mount_button;
+        QPushButton * unmount_button;
+
         QTableWidget * links_table;
         QTableWidget * selected_links_table;
+
         void load_robot_links();
- 
+        void create_mount_points_table_widget(); 
+        void create_selected_mount_points_table_widget();
+        void create_mount_button();
+        void create_unmount_button();
+
         std::vector<const robot_model::LinkModel*> links;
         std::vector<const robot_model::LinkModel*> mount_point_links;
 
