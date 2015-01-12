@@ -94,14 +94,21 @@ void MountPointsTabWidget::mount_button_clicked()
 
     for (int i = 0; i < selected_links.size(); i++)
     {
-        
-        // Add to mount points table if not already in it.
-        this->selected_links_table->insertRow(0);
-        QTableWidgetItem * newItem = selected_links[i]->clone();
-        this->selected_links_table->setItem(0, 0, newItem);
-        //links_to_be_added[i] = found_link;
-        //this->links_table->removeRow(i);
-        //this->selected_links_table->setItem(0, 0, found_link);
+        // Check if the string already exists in table. If it does, don't add
+        if (this->selected_links_table->findItems(selected_links[i]->text(), Qt::MatchContains).empty())
+        {
+		// Add to mount points table if not already in it.
+		this->selected_links_table->insertRow(0);
+		QTableWidgetItem * newItem = selected_links[i]->clone();
+		this->selected_links_table->setItem(0, 0, newItem);
+		//links_to_be_added[i] = found_link;
+		//this->links_table->removeRow(i);
+		//this->selected_links_table->setItem(0, 0, found_link);
+        } 
+        else
+        {
+                ROS_WARN("%s is already in the mounted points table.", selected_links[i]->text().toStdString().c_str());
+        }
     }
 
 }
