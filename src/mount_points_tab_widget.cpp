@@ -109,6 +109,7 @@ void MountPointsTabWidget::mount_button_clicked()
 
                 // highlight the link in the display 
                 StartScreen::visualizationDisplay->robot_state_display_->setLinkColor(newItem->text().toStdString(), QColor(0, 0, 240));
+
         } 
         else
         {
@@ -121,6 +122,16 @@ void MountPointsTabWidget::mount_button_clicked()
 
 void MountPointsTabWidget::unmount_button_clicked()
 {
+     // Remove item from selected_links_table. Essentially inverse of above..
+     QList<QTableWidgetItem*> selected_links = this->selected_links_table->selectedItems();
+
+    for (int i = 0; i < selected_links.size(); i++)
+    {
+		// Add to mount points table if not already in it.
+                StartScreen::visualizationDisplay->robot_state_display_->unsetLinkColor(selected_links[i]->text().toStdString());
+                ROS_INFO("%s is no longer selected to be a mount point", selected_links[i]->text().toStdString().c_str());
+		this->selected_links_table->removeRow(selected_links[i]->row());
+    }
 
 }
 
