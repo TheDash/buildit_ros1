@@ -23,7 +23,9 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     this->create_mount_button();
     this->create_unmount_button();
 
-    //TODO allow mounting buttons to move things over. 
+    //TODO allow mounting buttons to move things over. [Done]
+    //TODO make the mount points highlight links in the display
+    // this means that everything in the selected links list will highlight something in the display
 }
 
 
@@ -104,12 +106,16 @@ void MountPointsTabWidget::mount_button_clicked()
 		//links_to_be_added[i] = found_link;
 		//this->links_table->removeRow(i);
 		//this->selected_links_table->setItem(0, 0, found_link);
+
+                // highlight the link in the display 
+                StartScreen::visualizationDisplay->robot_state_display_->setLinkColor(newItem->text().toStdString(), QColor(0, 0, 240));
         } 
         else
         {
                 ROS_WARN("%s is already in the mounted points table.", selected_links[i]->text().toStdString().c_str());
         }
     }
+
 
 }
 
