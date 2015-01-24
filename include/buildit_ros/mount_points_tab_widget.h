@@ -11,6 +11,7 @@
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_model/link_model.h>
 #include <fstream>
+#include <QProcess>
 
 class MountPointsTabWidget : public QWidget
 {
