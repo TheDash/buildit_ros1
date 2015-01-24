@@ -6,9 +6,9 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     // Functionality to add.
     // TODO File loader for URDF. Give URDF file to load. 
     // TODO Loaded URDF is set to robot description. 
-    load_urdf_button = new QPushButton(QString(QString::fromStdString("Load URDF")), this);
-    load_urdf_button->setGeometry(QRect(750, 35, 100, 50));
-    load_urdf_button->setVisible(true);
+    //load_urdf_button = new QPushButton(QString(QString::fromStdString("Load URDF")), this);
+    //load_urdf_button->setGeometry(QRect(750, 35, 100, 50));
+    //load_urdf_button->setVisible(true);
 
     QString text_string(QString::fromStdString("Load your robot's URDF and select the mount points by moving the links you wish to set as mount points to the right side box"));
     QLabel * text_block = new QLabel(text_string, this);
@@ -18,10 +18,11 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     this->load_robot_links();
     ROS_INFO("Loaded links");
 
-    this->create_mount_points_table_widget();
-    this->create_selected_mount_points_table_widget();
-    this->create_mount_button();
-    this->create_unmount_button();
+    this->create_load_base_urdf_button();
+    //this->create_mount_points_table_widget();
+    //this->create_selected_mount_points_table_widget();
+    //this->create_mount_button();
+    //this->create_unmount_button();
 
     //TODO allow mounting buttons to move things over. [Done]
     //TODO make the mount points highlight links in the display
@@ -34,6 +35,43 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
 MountPointsTabWidget::~MountPointsTabWidget()
 {
 
+}
+
+
+void MountPointsTabWidget::load_urdf_base_button_clicked()
+{
+    // Load the URDF and set the robot description to be whatever is inside the urdf 
+    QFileDialog dialog(this);
+    dialog.setFileMode(QFileDialog::AnyFile);
+
+    // Spawn the RViz Model in visualization. (E.g create visualization display)
+    StartScreen::visualizationDisplay->robot_state_display_->subProp("Robot Description")->setValue(QString::fromStdString( "robot_description" ));
+    
+    std::string robot_description = StartScreen::visualizationDisplay->robot_state_display_->subProp("Robot Description")->getValue().toString().toStdString();
+
+    // Check param server for wherever robot_description is set. 
+    std::string urdf_description;
+    ros::param::get(robot_description, urdf_description);
+
+    // Check if robot description exists
+    if (!urdf_description.empty())
+    {
+       ROS_INFO("Robot description found. Loading robot model.");
+       ROS_INFO("Desc: %s", robot_description.c_str());
+    } else
+    {
+       ROS_INFO("Robot description not found. Please set robot model.");
+    }
+
+}
+
+void MountPointsTabWidget::create_load_base_urdf_button()
+{
+    load_urdf_base_button = new QPushButton(QString(QString::fromStdString("Load URDF Base")), this);
+    load_urdf_base_button->setGeometry(QRect(700, 35, 120, 50));
+    load_urdf_base_button->setVisible(true);
+
+     connect(this->load_urdf_base_button, SIGNAL(clicked()), this, SLOT(load_urdf_base_button_clicked()));
 }
 
 void MountPointsTabWidget::create_mount_points_table_widget()

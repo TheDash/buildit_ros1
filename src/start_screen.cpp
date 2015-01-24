@@ -28,6 +28,7 @@ StartScreen::StartScreen(QWidget *parent)
    StartScreen::visualizationDisplay->setGeometry(QRect(600, 0, 331, 501));
 
    // Tabs must be initialized after the viz display or else segfault occurs. The tabs depend on display's vars.
+
    tab_widget = new StartScreenTabWidget;
 
    centralLayout->addWidget(tab_widget);
