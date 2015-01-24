@@ -19,10 +19,10 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     ROS_INFO("Loaded links");
 
     this->create_load_base_urdf_button();
-    //this->create_mount_points_table_widget();
-    //this->create_selected_mount_points_table_widget();
-    //this->create_mount_button();
-    //this->create_unmount_button();
+    this->create_mount_points_table_widget();
+    this->create_selected_mount_points_table_widget();
+    this->create_mount_button();
+    this->create_unmount_button();
 
     //TODO allow mounting buttons to move things over. [Done]
     //TODO make the mount points highlight links in the display
@@ -166,7 +166,7 @@ void MountPointsTabWidget::create_selected_mount_points_table_widget()
 
     this->selected_links_table = new QTableWidget(0, 1, this);
     ROS_INFO("Creating selection table..");
-    this->selected_links_table->setGeometry(QRect(600, 300, 400, 400));
+    this->selected_links_table->setGeometry(QRect(520, 300, 400, 400));
     this->selected_links_table->horizontalHeader()->setStretchLastSection(true);
 
     this->selected_links_table->setHorizontalHeaderLabels(QString("Mount points;").split(";"));
@@ -176,7 +176,7 @@ void MountPointsTabWidget::create_selected_mount_points_table_widget()
 void MountPointsTabWidget::create_mount_button()
 {
   this->mount_button = new QPushButton(">", this);
-  this->mount_button->setGeometry(QRect(470, 450, 70, 40));
+  this->mount_button->setGeometry(QRect(450, 450, 70, 40));
 
   // Associate button with function call
   connect(this->mount_button, SIGNAL(clicked()), this, SLOT(mount_button_clicked()));
@@ -232,7 +232,7 @@ void MountPointsTabWidget::unmount_button_clicked()
 void MountPointsTabWidget::create_unmount_button()
 {
   this->unmount_button = new QPushButton("<", this);
-  this->unmount_button->setGeometry(QRect(470, 500, 70, 40));
+  this->unmount_button->setGeometry(QRect(450, 500, 70, 40));
 
    connect(this->unmount_button, SIGNAL(clicked()), this, SLOT(unmount_button_clicked()));
 
