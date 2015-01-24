@@ -19,11 +19,11 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     ROS_INFO("Loaded links");
 
     this->create_load_base_urdf_button();
-    this->create_create_mount_points_button();
-    this->create_mount_points_table_widget();
-    this->create_selected_mount_points_table_widget();
-    this->create_mount_button();
-    this->create_unmount_button();
+    //this->create_create_mount_points_button();
+    //this->create_mount_points_table_widget();
+    //this->create_selected_mount_points_table_widget();
+    //this->create_mount_button();
+    //this->create_unmount_button();
 
     //TODO allow mounting buttons to move things over. [Done]
     //TODO make the mount points highlight links in the display
@@ -42,7 +42,7 @@ MountPointsTabWidget::~MountPointsTabWidget()
 //Taken from RViz tutorials 
 void makeChessPieceMarker(std::string& link_name)
 {
-  // Get the position from the link name. 
+ /* // Get the position from the link name. 
   tf::Vector3 position;
   using namespace visualization_msgs;
   InteractiveMarker int_marker;
@@ -73,7 +73,7 @@ void makeChessPieceMarker(std::string& link_name)
 
   // set different callback for POSE_UPDATE feedback
   server->setCallback(int_marker.name, &alignMarker,   visualization_msgs::InteractiveMarkerFeedback::POSE_UPDATE );
-
+*/
 }
 
 // This will take all of the links selected in the selected table
