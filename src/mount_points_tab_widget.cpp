@@ -46,7 +46,8 @@ void MountPointsTabWidget::load_urdf_base_button_clicked()
     // Set the robot description by loading .urdf.xacro, first check what the end filename is.
     if (fileNames.size() == 1)
     {
-      QString qFileName = fileNames.takeAt(1);
+      ROS_INFO("Selected file.");
+      QString qFileName = fileNames.value(0);
       std::string fileName = qFileName.toStdString();
       if (!fileName.empty())
       {
