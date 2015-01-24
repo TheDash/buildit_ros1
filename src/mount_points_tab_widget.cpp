@@ -41,7 +41,7 @@ MountPointsTabWidget::~MountPointsTabWidget()
 // Load the URDF and set the robot description to be whatever is inside the urdf 
 void MountPointsTabWidget::load_urdf_base_button_clicked()
 {
-    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"), "/home/", tr("URDF Files (*.urdf, *.urdf.xacro)"));
+    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"), "/home/");
     
     // Set the robot description by loading .urdf.xacro, first check what the end filename is.
     if (fileNames.size() == 1)
