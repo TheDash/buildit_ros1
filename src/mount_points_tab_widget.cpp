@@ -63,18 +63,15 @@ void MountPointsTabWidget::load_urdf_base_button_clicked()
         }
         else if (qFileName.endsWith(".xacro"))
         {
-            
+           // This chunk of code just gets the output of rosrun xacro xacro.py and sets it to robot_description
            std::string cmd("rosrun xacro xacro.py ");
            cmd += fileName;
-
            QProcess process;
            process.start(cmd.c_str());
-           ROS_INFO("Qt command %s: ", cmd.c_str());
            process.waitForReadyRead();
            process.waitForFinished();
            QString output(process.readAllStandardOutput());
            std::string robot_desc = output.toStdString();
-           ROS_INFO("Desc %s", robot_desc.c_str());
            ros::param::set("robot_description", robot_desc);
            ROS_INFO("Set the robot description to %s", fileName.c_str());
         }
