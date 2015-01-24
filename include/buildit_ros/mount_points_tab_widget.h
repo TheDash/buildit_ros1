@@ -12,6 +12,11 @@
 #include <moveit/robot_model/link_model.h>
 #include <fstream>
 #include <QProcess>
+#include <visualization_msgs/InteractiveMarkerControl.h>
+#include <visualization_msgs/InteractiveMarker.h>
+#include <tf/tf.h>
+#include <tf/transform_broadcaster.h>
+#include <interactive_markers/interactive_marker_server.h>
 
 class MountPointsTabWidget : public QWidget
 {
@@ -24,12 +29,15 @@ Q_OBJECT
         QPushButton * load_urdf_base_button;
         QPushButton * mount_button;
         QPushButton * unmount_button;
+        QPushButton * create_mount_points_button;
 
         QTableWidget * links_table;
         QTableWidget * selected_links_table;
 
         void load_robot_links();
 
+        void makeChessPieceMarker(std::string&);
+        void create_create_mount_points_button();
         void create_load_base_urdf_button();
         void create_mount_points_table_widget(); 
         void create_selected_mount_points_table_widget();
@@ -38,6 +46,7 @@ Q_OBJECT
         std::vector<const robot_model::LinkModel*> links;
         std::vector<const robot_model::LinkModel*> mount_point_links;
    private Q_SLOTS:
+        void create_mount_points_button_clicked();
         void load_urdf_base_button_clicked();
         void mount_button_clicked();
         void unmount_button_clicked();

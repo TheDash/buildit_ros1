@@ -19,6 +19,7 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     ROS_INFO("Loaded links");
 
     this->create_load_base_urdf_button();
+    this->create_create_mount_points_button();
     this->create_mount_points_table_widget();
     this->create_selected_mount_points_table_widget();
     this->create_mount_button();
@@ -37,6 +38,70 @@ MountPointsTabWidget::~MountPointsTabWidget()
 
 }
 
+
+//Taken from RViz tutorials 
+void makeChessPieceMarker(std::string& link_name)
+{
+  // Get the position from the link name. 
+  tf::Vector3 position;
+  using namespace visualization_msgs;
+  InteractiveMarker int_marker;
+  int_marker.header.frame_id = link_name.c_str();
+  tf::pointTFToMsg(position, int_marker.pose.position);
+  int_marker.scale = 1;
+
+  int_marker.name = link_name.c_str();
+  int_marker.description = (link_name + " mount point").c_str();
+
+  InteractiveMarkerControl control;
+
+  control.orientation.w = 1;
+  control.orientation.x = 0;
+  control.orientation.y = 1;
+  control.orientation.z = 0;
+  control.interaction_mode = InteractiveMarkerControl::MOVE_PLANE;
+  int_marker.controls.push_back(control);
+
+  // make a box which also moves in the plane
+  control.markers.push_back( makeBox(int_marker) );
+  control.always_visible = true;
+  int_marker.controls.push_back(control);
+
+  // we want to use our special callback function
+  server->insert(int_marker);
+  server->setCallback(int_marker.name, &processFeedback);
+
+  // set different callback for POSE_UPDATE feedback
+  server->setCallback(int_marker.name, &alignMarker,   visualization_msgs::InteractiveMarkerFeedback::POSE_UPDATE );
+
+}
+
+// This will take all of the links selected in the selected table
+// and create interactive markers at those link points
+void MountPointsTabWidget::create_mount_points_button_clicked()
+{
+     // get selected mount points and create markers for them.
+     for (int i = 0; i < this->selected_links_table->rowCount(); i++)
+     {
+         QTableWidgetItem* item = this->selected_links_table->item(i, 0);
+         // get link name
+         QString link = item->text();
+         std::string link_name = link.toStdString();
+         
+
+     }
+
+}
+
+void MountPointsTabWidget::create_create_mount_points_button()
+{
+    create_mount_points_button = new QPushButton(QString(QString::fromStdString("Create Mount Points")), this);
+    create_mount_points_button->setGeometry(QRect(650, 750, 180, 50));
+    create_mount_points_button->setVisible(true);
+
+     connect(this->create_mount_points_button, SIGNAL(clicked()), this, SLOT(create_mount_points_button_clicked()));
+
+}
 
 // Load the URDF and set the robot description to be whatever is inside the urdf 
 void MountPointsTabWidget::load_urdf_base_button_clicked()
