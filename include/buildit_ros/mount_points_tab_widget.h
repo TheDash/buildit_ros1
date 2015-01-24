@@ -10,6 +10,7 @@
 #include <QFileDialog>
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_model/link_model.h>
+#include <fstream>
 
 class MountPointsTabWidget : public QWidget
 {

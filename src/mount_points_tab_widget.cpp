@@ -38,11 +38,52 @@ MountPointsTabWidget::~MountPointsTabWidget()
 }
 
 
+// Load the URDF and set the robot description to be whatever is inside the urdf 
 void MountPointsTabWidget::load_urdf_base_button_clicked()
 {
-    // Load the URDF and set the robot description to be whatever is inside the urdf 
-    QFileDialog dialog(this);
-    dialog.setFileMode(QFileDialog::AnyFile);
+    QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"), "/home/", tr("URDF Files (*.urdf, *.urdf.xacro)"));
+    
+    // Set the robot description by loading .urdf.xacro, first check what the end filename is.
+    if (fileNames.size() == 1)
+    {
+      QString qFileName = fileNames.takeAt(1);
+      std::string fileName = qFileName.toStdString();
+      if (!fileName.empty())
+      {
+        // Check if .urdf or .xacro
+        if (qFileName.endsWith(".urdf"))
+        {
+           std::ifstream ifs(fileName.c_str());
+           std::string content( (std::istreambuf_iterator<char>(ifs) ),
+                                (std::istreambuf_iterator<char>()    )  );
+
+           ros::param::set("robot_description", content);
+           ROS_INFO("Set the robot description to %s ", fileName.c_str());
+        }
+        else if (qFileName.endsWith(".xacro"))
+        {
+        }
+        else 
+        {
+          ROS_WARN("URDF or XACRO file not selected. Try again.");
+        }
+ 
+      } else 
+      {
+         ROS_WARN("Something is wrong with the file name. Please file a bug report with what file you used.");
+      } 
+      
+    } else if (fileNames.size() > 1)
+    {
+      ROS_WARN("Please select only one URDF/XACRO file. You may add parts later on.");
+
+    } else if (fileNames.size() < 1)
+    {
+      ROS_WARN("Please select a URDF/XACRO file to be the robot base model.");
+    }
+
+    //QFileDialog dialog(this);
+    //dialog.setFileMode(QFileDialog::AnyFile);
 
     // Spawn the RViz Model in visualization. (E.g create visualization display)
     StartScreen::visualizationDisplay->robot_state_display_->subProp("Robot Description")->setValue(QString::fromStdString( "robot_description" ));
@@ -62,7 +103,6 @@ void MountPointsTabWidget::load_urdf_base_button_clicked()
     {
        ROS_INFO("Robot description not found. Please set robot model.");
     }
-
 }
 
 void MountPointsTabWidget::create_load_base_urdf_button()
