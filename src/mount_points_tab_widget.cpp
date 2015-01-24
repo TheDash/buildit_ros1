@@ -100,6 +100,8 @@ void MountPointsTabWidget::load_urdf_base_button_clicked()
     {
        ROS_INFO("Robot description found. Loading robot model.");
        ROS_INFO("Desc: %s", robot_description.c_str());
+       StartScreen::visualizationDisplay->robot_state_display_->reset();
+       
     } else
     {
        ROS_INFO("Robot description not found. Please set robot model.");
