@@ -133,11 +133,10 @@ void alignMarker( const InteractiveMarkerFeedbackConstPtr &feedback )
 	server->applyChanges();
 }
 
-
 // Start interactive marker server 
 int main(int argc, char** argv)
 {
+   ros::init(argc, argv, "interactive_mount_points_server");
 
-
-
+  return 1;
 }
