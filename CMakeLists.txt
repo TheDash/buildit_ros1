@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(buildit_ros)
 
-find_package(catkin REQUIRED moveit_ros_visualization rviz visualization_msgs roscpp pluginlib)
+find_package(catkin REQUIRED moveit_ros visualization rviz visualization_msgs roscpp pluginlib)
 
 catkin_package(
 )
