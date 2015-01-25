@@ -14,21 +14,15 @@ using namespace visualization_msgs;
 
 MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
 {
-    // Functionality to add.
-    // TODO File loader for URDF. Give URDF file to load. 
-    // TODO Loaded URDF is set to robot description. 
-    //load_urdf_button = new QPushButton(QString(QString::fromStdString("Load URDF")), this);
-    //load_urdf_button->setGeometry(QRect(750, 35, 100, 50));
-    //load_urdf_button->setVisible(true);
 
     QString text_string(QString::fromStdString("Load your robot's URDF and select the mount points by moving the links you wish to set as mount points to the right side box"));
     QLabel * text_block = new QLabel(text_string, this);
     text_block->setGeometry(QRect(-25, 0, 900, 30));
     text_block->setAlignment(Qt::AlignCenter);
 
+    // If there's currently a model, load it. 
     this->load_robot_links();
-    ROS_INFO("Loaded links");
-
+    // If there isn't a model, load robot links will be called inside this fn. 
     this->create_load_base_urdf_button();
     this->create_create_mount_points_button();
     this->create_mount_points_table_widget();
@@ -207,7 +201,7 @@ menu_handler.insert( sub_menu_handle, "Second Entry", &processFeedback );
 void MountPointsTabWidget::create_create_mount_points_button()
 {
     create_mount_points_button = new QPushButton(QString(QString::fromStdString("Create Mount Points")), this);
-    create_mount_points_button->setGeometry(QRect(650, 750, 180, 50));
+    create_mount_points_button->setGeometry(QRect(150, 30, 180, 50));
     create_mount_points_button->setVisible(true);
 
      connect(this->create_mount_points_button, SIGNAL(clicked()), this, SLOT(create_mount_points_button_clicked()));
@@ -219,7 +213,6 @@ void MountPointsTabWidget::load_urdf_base_button_clicked()
 {
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open File"), "/home/");
     
-    // Set the robot description by loading .urdf.xacro, first check what the end filename is.
     if (fileNames.size() == 1)
     {
       ROS_INFO("Selected file.");
@@ -293,6 +286,8 @@ void MountPointsTabWidget::load_urdf_base_button_clicked()
     {
        ROS_INFO("Robot description not found. Please set robot model.");
     }
+
+    this->load_robot_links();
 }
 
 void MountPointsTabWidget::create_load_base_urdf_button()
@@ -306,8 +301,10 @@ void MountPointsTabWidget::create_load_base_urdf_button()
 
 void MountPointsTabWidget::create_mount_points_table_widget()
 {
-    int row_count;
+    this->links_table = new QTableWidget(0, 1, this);
+    /*int row_count;
     row_count = this->links.size();
+
 
     if (!this->links.empty())
     {
@@ -318,6 +315,8 @@ void MountPointsTabWidget::create_mount_points_table_widget()
 	    for (int i = 0; i < row_count; i++)
 	    {
 		const robot_model::LinkModel* link_model = this->links.at(i);
+                ROS_INFO("Getting links at i"); 
+
 		std::string link_name = link_model->getName();
 		ROS_INFO("Found link: %s ... Loading ... ", link_name.c_str());
 		
@@ -328,8 +327,8 @@ void MountPointsTabWidget::create_mount_points_table_widget()
     } else
     {
        ROS_WARN("No robot model loaded.. Please load a robot model.");
-    }
-    this->links_table->setGeometry(QRect(20, 300, 400, 400));
+    }*/
+    this->links_table->setGeometry(QRect(20, 150, 400, 400));
     this->links_table->horizontalHeader()->setStretchLastSection(true);
     this->links_table->setHorizontalHeaderLabels(QString("Robot links;").split(";"));
 
@@ -337,22 +336,18 @@ void MountPointsTabWidget::create_mount_points_table_widget()
 
 void MountPointsTabWidget::create_selected_mount_points_table_widget()
 {
-  //  int row_count;
-  //  row_count = this->links.size();
-
     this->selected_links_table = new QTableWidget(0, 1, this);
     ROS_INFO("Creating selection table..");
-    this->selected_links_table->setGeometry(QRect(520, 300, 400, 400));
+    this->selected_links_table->setGeometry(QRect(520, 150, 400, 400));
     this->selected_links_table->horizontalHeader()->setStretchLastSection(true);
 
     this->selected_links_table->setHorizontalHeaderLabels(QString("Mount points;").split(";"));
-
 }
 
 void MountPointsTabWidget::create_mount_button()
 {
   this->mount_button = new QPushButton(">", this);
-  this->mount_button->setGeometry(QRect(450, 450, 70, 40));
+  this->mount_button->setGeometry(QRect(450, 300, 70, 40));
 
   // Associate button with function call
   connect(this->mount_button, SIGNAL(clicked()), this, SLOT(mount_button_clicked()));
@@ -408,9 +403,40 @@ void MountPointsTabWidget::unmount_button_clicked()
 void MountPointsTabWidget::create_unmount_button()
 {
   this->unmount_button = new QPushButton("<", this);
-  this->unmount_button->setGeometry(QRect(450, 500, 70, 40));
+  this->unmount_button->setGeometry(QRect(450, 350, 70, 40));
 
    connect(this->unmount_button, SIGNAL(clicked()), this, SLOT(unmount_button_clicked()));
+
+}
+
+void MountPointsTabWidget::populate_links_table()
+{
+    int row_count;
+    row_count = this->links.size();
+
+    if (!this->links.empty())
+    {
+	    //this->links_table = new QTableWidget(row_count, 1, this);
+	    //ROS_INFO("Creating data table..");
+	    
+	    // Load the QTableWidget
+	    for (int i = 0; i < row_count; i++)
+	    {
+                this->links_table->insertRow( this->links_table->rowCount() );
+		const robot_model::LinkModel* link_model = this->links.at(i);
+                ROS_INFO("Getting links at i"); 
+
+		std::string link_name = link_model->getName();
+		ROS_INFO("Found link: %s ... Loading ... ", link_name.c_str());
+		
+		// Create the table item. 
+		QTableWidgetItem * entry = new QTableWidgetItem(QString(QString::fromStdString(link_name)));
+		this->links_table->setItem(i, 0, entry);
+    }
+    } else
+    {
+       ROS_WARN("No robot model loaded.. Please load a robot model.");
+    }
 
 }
 
@@ -426,14 +452,11 @@ void MountPointsTabWidget::load_robot_links()
 	           this->links = display_model->getLinkModels();
 		   ROS_INFO("Got link models from display..");
            } 
-           else
-           {
-                   ROS_WARN("No robot has been loaded. Please load a robot.");
-           }
    } 
    else
    {
        ROS_WARN("The display has not been initialized yet...");
    }
+
 }
 
