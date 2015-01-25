@@ -14,9 +14,14 @@
 #include <QProcess>
 #include <visualization_msgs/InteractiveMarkerControl.h>
 #include <visualization_msgs/InteractiveMarker.h>
+#include <visualization_msgs/InteractiveMarkerFeedback.h>
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
 #include <interactive_markers/interactive_marker_server.h>
+#include <interactive_markers/menu_handler.h>
+#include <ros/ros.h>
+
+using namespace visualization_msgs;
 
 class MountPointsTabWidget : public QWidget
 {
@@ -30,12 +35,15 @@ Q_OBJECT
         QPushButton * mount_button;
         QPushButton * unmount_button;
         QPushButton * create_mount_points_button;
-
+        interactive_markers::MenuHandler menu_handler;
+  
         QTableWidget * links_table;
         QTableWidget * selected_links_table;
 
         void load_robot_links();
+        boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server;
 
+        visualization_msgs::Marker makeBox (InteractiveMarker&);
         void makeChessPieceMarker(std::string&);
         void create_create_mount_points_button();
         void create_load_base_urdf_button();

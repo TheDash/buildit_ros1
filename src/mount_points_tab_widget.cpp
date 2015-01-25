@@ -1,6 +1,11 @@
 #include <buildit_ros/mount_points_tab_widget.h>
 #include <buildit_ros/start_screen.h>
 
+static void alignMarker(const InteractiveMarkerFeedbackConstPtr&);
+static void processFeedback( const InteractiveMarkerFeedbackConstPtr&);
+boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server;
+using namespace visualization_msgs;
+
 MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
 {
     // Functionality to add.
@@ -19,11 +24,11 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     ROS_INFO("Loaded links");
 
     this->create_load_base_urdf_button();
-    //this->create_create_mount_points_button();
-    //this->create_mount_points_table_widget();
-    //this->create_selected_mount_points_table_widget();
-    //this->create_mount_button();
-    //this->create_unmount_button();
+    this->create_create_mount_points_button();
+    this->create_mount_points_table_widget();
+    this->create_selected_mount_points_table_widget();
+    this->create_mount_button();
+    this->create_unmount_button();
 
     //TODO allow mounting buttons to move things over. [Done]
     //TODO make the mount points highlight links in the display
@@ -38,11 +43,45 @@ MountPointsTabWidget::~MountPointsTabWidget()
 
 }
 
+Marker MountPointsTabWidget::makeBox(InteractiveMarker &msg )
+{
+	Marker marker;
+	marker.type = Marker::CUBE;
+	marker.scale.x = msg.scale * 0.45;
+	marker.scale.y = msg.scale * 0.45;
+	marker.scale.z = msg.scale * 0.45;
+	marker.color.r = 0.5;
+	marker.color.g = 0.5;
+	marker.color.b = 0.5;
+	marker.color.a = 1.0;
+	return marker;
+}
+
+
+void alignMarker( const InteractiveMarkerFeedbackConstPtr &feedback )
+{
+	geometry_msgs::Pose pose = feedback->pose;
+	pose.position.x = round(pose.position.x-0.5)+0.5;
+	pose.position.y = round(pose.position.y-0.5)+0.5;
+	ROS_INFO_STREAM( feedback->marker_name << ":"
+	<< " aligning position = "
+	<< feedback->pose.position.x
+	<< ", " << feedback->pose.position.y
+	<< ", " << feedback->pose.position.z
+	<< " to "
+	<< pose.position.x
+	<< ", " << pose.position.y
+	<< ", " << pose.position.z );
+
+	server->setPose( feedback->marker_name, pose );
+	server->applyChanges();
+}
+
 
 //Taken from RViz tutorials 
-void makeChessPieceMarker(std::string& link_name)
+void MountPointsTabWidget::makeChessPieceMarker(std::string& link_name)
 {
- /* // Get the position from the link name. 
+  // Get the position from the link name. 
   tf::Vector3 position;
   using namespace visualization_msgs;
   InteractiveMarker int_marker;
@@ -73,7 +112,60 @@ void makeChessPieceMarker(std::string& link_name)
 
   // set different callback for POSE_UPDATE feedback
   server->setCallback(int_marker.name, &alignMarker,   visualization_msgs::InteractiveMarkerFeedback::POSE_UPDATE );
-*/
+
+}
+
+void processFeedback( const InteractiveMarkerFeedbackConstPtr &feedback )
+{
+  std::ostringstream s;
+  s << "Feedback from marker '" << feedback->marker_name << "' "
+      << " / control '" << feedback->control_name << "'";
+
+  std::ostringstream mouse_point_ss;
+  if( feedback->mouse_point_valid )
+  {
+    mouse_point_ss << " at " << feedback->mouse_point.x
+                   << ", " << feedback->mouse_point.y
+                   << ", " << feedback->mouse_point.z
+                   << " in frame " << feedback->header.frame_id;
+  }
+
+  switch ( feedback->event_type )
+  {
+    case visualization_msgs::InteractiveMarkerFeedback::BUTTON_CLICK:
+      ROS_INFO_STREAM( s.str() << ": button click" << mouse_point_ss.str() << "." );
+      break;
+
+    case visualization_msgs::InteractiveMarkerFeedback::MENU_SELECT:
+      ROS_INFO_STREAM( s.str() << ": menu item " << feedback->menu_entry_id << " clicked" << mouse_point_ss.str() << "." );
+      break;
+
+    case visualization_msgs::InteractiveMarkerFeedback::POSE_UPDATE:
+      ROS_INFO_STREAM( s.str() << ": pose changed"
+          << "\nposition = "
+          << feedback->pose.position.x
+          << ", " << feedback->pose.position.y
+          << ", " << feedback->pose.position.z
+          << "\norientation = "
+          << feedback->pose.orientation.w
+          << ", " << feedback->pose.orientation.x
+          << ", " << feedback->pose.orientation.y
+          << ", " << feedback->pose.orientation.z
+          << "\nframe: " << feedback->header.frame_id
+          << " time: " << feedback->header.stamp.sec << "sec, "
+          << feedback->header.stamp.nsec << " nsec" );
+      break;
+
+    case visualization_msgs::InteractiveMarkerFeedback::MOUSE_DOWN:
+      ROS_INFO_STREAM( s.str() << ": mouse down" << mouse_point_ss.str() << "." );
+      break;
+
+    case visualization_msgs::InteractiveMarkerFeedback::MOUSE_UP:
+      ROS_INFO_STREAM( s.str() << ": mouse up" << mouse_point_ss.str() << "." );
+      break;
+  }
+
+  server->applyChanges();
 }
 
 // This will take all of the links selected in the selected table
