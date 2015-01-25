@@ -27,17 +27,16 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     // This table will be populated later when the load model button is pressed
     this->create_create_mount_points_button();
 
+    // The table should only be created once.. 
+    this->create_mount_points_table_widget();
+
+    // Check if there's currently a robot in the scene
      if (!this->links.empty())
     {
-        // This will create the table and then populate it 
+        // This will create the table and then populate it since there is a robot in the scene.. ok it seems that the table has to be populated before being loaded? what the fuk
 	ROS_INFO("Populating links table!");
-        this->create_mount_points_table_widget();
         this->populate_links_table();
-    } else
-    {
-	this->create_mount_points_table_widget();
     }
-
     this->create_selected_mount_points_table_widget();
     this->create_mount_button();
     this->create_unmount_button();
@@ -220,6 +219,36 @@ void MountPointsTabWidget::create_create_mount_points_button()
 
 }
 
+void MountPointsTabWidget::populate_links_table_after_button()
+{
+  // Get the current tables
+  int rowcount;
+  rowcount = this->links_table->rowCount();
+  for (int i =0; i < rowcount; i++)
+  {
+      this->links_table->removeRow(0);
+  }
+
+  // Now repopulate it.
+
+  int newrowcount;
+  newrowcount = this->links.size();
+
+  for (int i = 0; i < newrowcount; i++)
+  {
+      this->links_table->insertRow(0);
+      const robot_model::LinkModel* link_model = this->links.at(i);
+
+      std::string link_name = link_model->getName(); 
+      ROS_INFO("Found link: %s ... Loading ... ", link_name.c_str());
+		
+      // Create the table item. 
+      QTableWidgetItem * entry = new QTableWidgetItem(QString(QString::fromStdString(link_name)));
+      this->links_table->setItem(0, 0, entry);
+  }
+
+}
+
 // Load the URDF and set the robot description to be whatever is inside the urdf 
 void MountPointsTabWidget::load_urdf_base_button_clicked()
 {
@@ -300,6 +329,7 @@ void MountPointsTabWidget::load_urdf_base_button_clicked()
     }
 
     this->load_robot_links();
+    this->populate_links_table_after_button();
 }
 
 void MountPointsTabWidget::create_load_base_urdf_button()
@@ -397,17 +427,16 @@ void MountPointsTabWidget::create_unmount_button()
 
 void MountPointsTabWidget::populate_links_table()
 {
-    delete this->links_table;
 
     int row_count;
     row_count = this->links.size();
     ROS_INFO("Row count %d", row_count);
     this->links_table = new QTableWidget(row_count, 1, this);
+    this->links_table->setSortingEnabled(false);    
     this->links_table->setGeometry(QRect(20, 150, 400, 400));
     this->links_table->horizontalHeader()->setStretchLastSection(true);
     this->links_table->setHorizontalHeaderLabels(QString("Robot links;").split(";"));
     ROS_INFO("Current row count %d", this->links_table->rowCount());
-    this->links_table->setSortingEnabled(false);    
 
     if (!this->links.empty())
     {
@@ -431,7 +460,6 @@ void MountPointsTabWidget::populate_links_table()
     }
 
     ROS_INFO("Current row count %d", this->links_table->rowCount());
-    this->links_table->update();
 }
 
 void MountPointsTabWidget::load_robot_links()

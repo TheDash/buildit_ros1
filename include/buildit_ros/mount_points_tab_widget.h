@@ -41,6 +41,7 @@ Q_OBJECT
 
         void load_robot_links();
 
+        void populate_links_table_after_button();
         void populate_links_table();
         void create_create_mount_points_button();
         void create_load_base_urdf_button();
