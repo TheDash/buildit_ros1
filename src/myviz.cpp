@@ -71,6 +71,11 @@ MyViz::MyViz( QWidget* parent )
 
   manager_->addDisplay(robot_state_display_, true);
 
+  // Add the marker display here 
+  interactive_marker_display_ = new rviz::InteractiveMarkerDisplay();
+  interactive_marker_display_->setTopic(QString("/mount_points/update"), QString());
+  manager_->addDisplay(interactive_marker_display_, true);
+
   // Set robot description
   robot_state_display_->subProp("Robot Description")->setValue(QString::fromStdString( "robot_description" ));
 
@@ -78,21 +83,6 @@ MyViz::MyViz( QWidget* parent )
   rviz::ViewController* view = manager_->getViewManager()->getCurrent();
   view->subProp( "Distance" )->setValue( 4.0f );
 
-  /*// Create a Grid display.
-  grid_ = manager_->createDisplay( "rviz/Grid", "adjustable grid", true );
-  ROS_ASSERT( grid_ != NULL );
-
-  // Create a robot model display. 
-  robot_model_ = manager_->createDisplay("rviz/RobotModel", "Robot Model", true);
-  ROS_ASSERT( robot_model_ != NULL);
-
-  // Configure the GridDisplay the way we like it.
-  grid_->subProp( "Line Style" )->setValue( "Billboards" );
-  grid_->subProp( "Color" )->setValue( Qt::yellow );*/
-
-  // Initialize the slider values.
-  //thickness_slider->setValue( 25 );
-  //cell_size_slider->setValue( 10 );
 }
 
 // Destructor.

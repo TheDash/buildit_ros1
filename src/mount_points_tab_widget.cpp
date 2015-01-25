@@ -176,7 +176,7 @@ void processFeedback( const InteractiveMarkerFeedbackConstPtr &feedback )
 // and create interactive markers at those link points
 void MountPointsTabWidget::create_mount_points_button_clicked()
 {
-
+// Either need to spawn new thread.. or run another node. I think I'll port this over to another executable node to run the server. 
       server.reset( new interactive_markers::InteractiveMarkerServer("mount_points","",false) );
       ROS_INFO("Reset interactive markers server..");
 

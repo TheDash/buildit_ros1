@@ -2,6 +2,7 @@
 #define MYVIZ_H
 
 #include <QWidget>
+#include <rviz/default_plugin/interactive_marker_display.h>
 #include <moveit/robot_state_rviz_plugin/robot_state_display.h>
 #include <rviz/view_manager.h>
 
@@ -20,6 +21,7 @@ Q_OBJECT
 public:
   MyViz( QWidget* parent = 0 );
   moveit_rviz_plugin::RobotStateDisplay* robot_state_display_;
+  rviz::InteractiveMarkerDisplay * interactive_marker_display_;
   virtual ~MyViz();
 
 private Q_SLOTS:
