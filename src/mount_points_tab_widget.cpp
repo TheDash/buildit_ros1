@@ -24,8 +24,20 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     this->load_robot_links();
     // If there isn't a model, load robot links will be called inside this fn. 
     this->create_load_base_urdf_button();
+    // This table will be populated later when the load model button is pressed
     this->create_create_mount_points_button();
-    this->create_mount_points_table_widget();
+
+     if (!this->links.empty())
+    {
+        // This will create the table and then populate it 
+	ROS_INFO("Populating links table!");
+        this->create_mount_points_table_widget();
+        this->populate_links_table();
+    } else
+    {
+	this->create_mount_points_table_widget();
+    }
+
     this->create_selected_mount_points_table_widget();
     this->create_mount_button();
     this->create_unmount_button();
@@ -302,32 +314,6 @@ void MountPointsTabWidget::create_load_base_urdf_button()
 void MountPointsTabWidget::create_mount_points_table_widget()
 {
     this->links_table = new QTableWidget(0, 1, this);
-    /*int row_count;
-    row_count = this->links.size();
-
-
-    if (!this->links.empty())
-    {
-	    this->links_table = new QTableWidget(row_count, 1, this);
-	    ROS_INFO("Creating data table..");
-	    
-	    // Load the QTableWidget
-	    for (int i = 0; i < row_count; i++)
-	    {
-		const robot_model::LinkModel* link_model = this->links.at(i);
-                ROS_INFO("Getting links at i"); 
-
-		std::string link_name = link_model->getName();
-		ROS_INFO("Found link: %s ... Loading ... ", link_name.c_str());
-		
-		// Create the table item. 
-		QTableWidgetItem * entry = new QTableWidgetItem(QString(QString::fromStdString(link_name)));
-		this->links_table->setItem(i, 0, entry);
-    }
-    } else
-    {
-       ROS_WARN("No robot model loaded.. Please load a robot model.");
-    }*/
     this->links_table->setGeometry(QRect(20, 150, 400, 400));
     this->links_table->horizontalHeader()->setStretchLastSection(true);
     this->links_table->setHorizontalHeaderLabels(QString("Robot links;").split(";"));
@@ -411,20 +397,25 @@ void MountPointsTabWidget::create_unmount_button()
 
 void MountPointsTabWidget::populate_links_table()
 {
+    delete this->links_table;
+
     int row_count;
     row_count = this->links.size();
+    ROS_INFO("Row count %d", row_count);
+    this->links_table = new QTableWidget(row_count, 1, this);
+    this->links_table->setGeometry(QRect(20, 150, 400, 400));
+    this->links_table->horizontalHeader()->setStretchLastSection(true);
+    this->links_table->setHorizontalHeaderLabels(QString("Robot links;").split(";"));
+    ROS_INFO("Current row count %d", this->links_table->rowCount());
+    this->links_table->setSortingEnabled(false);    
 
     if (!this->links.empty())
     {
-	    //this->links_table = new QTableWidget(row_count, 1, this);
-	    //ROS_INFO("Creating data table..");
-	    
-	    // Load the QTableWidget
+
+	    // Insert new data
 	    for (int i = 0; i < row_count; i++)
 	    {
-                this->links_table->insertRow( this->links_table->rowCount() );
 		const robot_model::LinkModel* link_model = this->links.at(i);
-                ROS_INFO("Getting links at i"); 
 
 		std::string link_name = link_model->getName();
 		ROS_INFO("Found link: %s ... Loading ... ", link_name.c_str());
@@ -432,12 +423,15 @@ void MountPointsTabWidget::populate_links_table()
 		// Create the table item. 
 		QTableWidgetItem * entry = new QTableWidgetItem(QString(QString::fromStdString(link_name)));
 		this->links_table->setItem(i, 0, entry);
+           }
     }
-    } else
+    else
     {
        ROS_WARN("No robot model loaded.. Please load a robot model.");
     }
 
+    ROS_INFO("Current row count %d", this->links_table->rowCount());
+    this->links_table->update();
 }
 
 void MountPointsTabWidget::load_robot_links()
