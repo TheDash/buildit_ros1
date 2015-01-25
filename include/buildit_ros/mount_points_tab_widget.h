@@ -35,16 +35,12 @@ Q_OBJECT
         QPushButton * mount_button;
         QPushButton * unmount_button;
         QPushButton * create_mount_points_button;
-        interactive_markers::MenuHandler menu_handler;
   
         QTableWidget * links_table;
         QTableWidget * selected_links_table;
 
         void load_robot_links();
-        boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server;
 
-        visualization_msgs::Marker makeBox (InteractiveMarker&);
-        void makeChessPieceMarker(std::string&);
         void create_create_mount_points_button();
         void create_load_base_urdf_button();
         void create_mount_points_table_widget(); 

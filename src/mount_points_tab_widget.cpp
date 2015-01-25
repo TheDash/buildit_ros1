@@ -3,8 +3,14 @@
 
 static void alignMarker(const InteractiveMarkerFeedbackConstPtr&);
 static void processFeedback( const InteractiveMarkerFeedbackConstPtr&);
+void makeChessPieceMarker(tf::Vector3& );
+
 boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server;
+interactive_markers::MenuHandler menu_handler;
+visualization_msgs::Marker makeBox(InteractiveMarker&);  
+
 using namespace visualization_msgs;
+
 
 MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
 {
@@ -43,7 +49,7 @@ MountPointsTabWidget::~MountPointsTabWidget()
 
 }
 
-Marker MountPointsTabWidget::makeBox(InteractiveMarker &msg )
+Marker makeBox(InteractiveMarker &msg )
 {
 	Marker marker;
 	marker.type = Marker::CUBE;
@@ -79,18 +85,16 @@ void alignMarker( const InteractiveMarkerFeedbackConstPtr &feedback )
 
 
 //Taken from RViz tutorials 
-void MountPointsTabWidget::makeChessPieceMarker(std::string& link_name)
+void makeChessPieceMarker(tf::Vector3& position)
 {
   // Get the position from the link name. 
-  tf::Vector3 position;
-  using namespace visualization_msgs;
   InteractiveMarker int_marker;
-  int_marker.header.frame_id = link_name.c_str();
+  int_marker.header.frame_id = "back_right_wheel";
   tf::pointTFToMsg(position, int_marker.pose.position);
   int_marker.scale = 1;
 
-  int_marker.name = link_name.c_str();
-  int_marker.description = (link_name + " mount point").c_str();
+  int_marker.name = "back_right_wheel";
+  int_marker.description = "back_right_wheel";
 
   InteractiveMarkerControl control;
 
@@ -172,8 +176,21 @@ void processFeedback( const InteractiveMarkerFeedbackConstPtr &feedback )
 // and create interactive markers at those link points
 void MountPointsTabWidget::create_mount_points_button_clicked()
 {
+
+      server.reset( new interactive_markers::InteractiveMarkerServer("mount_points","",false) );
+      ROS_INFO("Reset interactive markers server..");
+
+      menu_handler.insert( "First Entry", &processFeedback );
+      menu_handler.insert( "Second Entry", &processFeedback );
+      interactive_markers::MenuHandler::EntryHandle sub_menu_handle =     menu_handler.insert( "Submenu" );
+menu_handler.insert( sub_menu_handle, "First Entry", &processFeedback );
+menu_handler.insert( sub_menu_handle, "Second Entry", &processFeedback );
+
+     tf::Vector3 position = tf::Vector3( 3,-3, 0);
+     makeChessPieceMarker( position );
+
      // get selected mount points and create markers for them.
-     for (int i = 0; i < this->selected_links_table->rowCount(); i++)
+    /* for (int i = 0; i < this->selected_links_table->rowCount(); i++)
      {
          QTableWidgetItem* item = this->selected_links_table->item(i, 0);
          // get link name
@@ -181,8 +198,10 @@ void MountPointsTabWidget::create_mount_points_button_clicked()
          std::string link_name = link.toStdString();
          
 
-     }
+     }*/
 
+     ROS_INFO("Created mount points.");
+     server->applyChanges();
 }
 
 void MountPointsTabWidget::create_create_mount_points_button()
