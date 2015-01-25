@@ -10,6 +10,7 @@
 
 #include <buildit_ros/InteractiveMountPoint.h>
 
+using namespace visualization_msgs;
 // GLOBAL VARS
 static void alignMarker(const InteractiveMarkerFeedbackConstPtr&);
 static void processFeedback( const InteractiveMarkerFeedbackConstPtr&);

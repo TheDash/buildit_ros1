@@ -43,6 +43,10 @@ set(SOURCE_FILES
     ${MOC_FILES}
 )
 
+add_executable(interactive_mount_points_server src/interactive_mount_points_server.cpp)
+target_link_libraries(interactive_mount_points_server ${catkin_LIBRARIES})
+add_dependencies(interactive_mount_points_server interactive_mount_points_server_gencpp)
+
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 #add_library(${PROJECT_NAME} ${SOURCE_FILES})
