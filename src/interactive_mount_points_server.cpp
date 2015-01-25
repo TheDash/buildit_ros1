@@ -1,6 +1,16 @@
 #include <ros/ros.h>
+#include <tf/tf.h>
+#include <tf/transform_broadcaster.h>
+#include <interactive_markers/menu_handler.h>
 #include <interactive_markers/interactive_marker_server.h>
 
+#include <visualization_msgs/InteractiveMarkerControl.h>
+#include <visualization_msgs/InteractiveMarker.h>
+#include <visualization_msgs/InteractiveMarkerFeedback.h>
+
+#include <buildit_ros/InteractiveMountPoint.h>
+
+// GLOBAL VARS
 static void alignMarker(const InteractiveMarkerFeedbackConstPtr&);
 static void processFeedback( const InteractiveMarkerFeedbackConstPtr&);
 void makeChessPieceMarker(tf::Vector3& );
@@ -8,6 +18,8 @@ void makeChessPieceMarker(tf::Vector3& );
 boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server;
 interactive_markers::MenuHandler menu_handler;
 visualization_msgs::Marker makeBox(InteractiveMarker&);  
+// END GLOBAL VARS
+
 
 Marker makeBox(InteractiveMarker &msg )
 {
@@ -133,10 +145,24 @@ void alignMarker( const InteractiveMarkerFeedbackConstPtr &feedback )
 	server->applyChanges();
 }
 
+// The server will have to spawn markers at the locations told, and be passed messages. 
+bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
+{
+
+   return true;
+}
+
+
 // Start interactive marker server 
 int main(int argc, char** argv)
 {
    ros::init(argc, argv, "interactive_mount_points_server");
+   ros::NodeHandle n;
 
-  return 1;
+   ros::ServiceServer service = n.advertiseService("spawn_mount_point_marker", spawn_mount_point_marker);
+   ROS_INFO("Ready to spawn mount points");
+
+   ros::spin();
+
+  return 0;
 }

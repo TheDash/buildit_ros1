@@ -1,14 +1,6 @@
 #include <buildit_ros/mount_points_tab_widget.h>
 #include <buildit_ros/start_screen.h>
 
-static void alignMarker(const InteractiveMarkerFeedbackConstPtr&);
-static void processFeedback( const InteractiveMarkerFeedbackConstPtr&);
-void makeChessPieceMarker(tf::Vector3& );
-
-boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server;
-interactive_markers::MenuHandler menu_handler;
-visualization_msgs::Marker makeBox(InteractiveMarker&);  
-
 using namespace visualization_msgs;
 
 
@@ -54,7 +46,7 @@ MountPointsTabWidget::~MountPointsTabWidget()
 void MountPointsTabWidget::create_mount_points_button_clicked()
 {
 // Either need to spawn new thread.. or run another node. I think I'll port this over to another executable node to run the server. 
-      server.reset( new interactive_markers::InteractiveMarkerServer("mount_points","",false) );
+     /* server.reset( new interactive_markers::InteractiveMarkerServer("mount_points","",false) );
       ROS_INFO("Reset interactive markers server..");
 
       menu_handler.insert( "First Entry", &processFeedback );
@@ -65,7 +57,7 @@ menu_handler.insert( sub_menu_handle, "Second Entry", &processFeedback );
 
      tf::Vector3 position = tf::Vector3( 3,-3, 0);
      makeChessPieceMarker( position );
-
+*/
      // get selected mount points and create markers for them.
     /* for (int i = 0; i < this->selected_links_table->rowCount(); i++)
      {
@@ -75,10 +67,10 @@ menu_handler.insert( sub_menu_handle, "Second Entry", &processFeedback );
          std::string link_name = link.toStdString();
          
 
-     }*/
+     }
 
      ROS_INFO("Created mount points.");
-     server->applyChanges();
+     server->applyChanges();*/
 }
 
 void MountPointsTabWidget::create_create_mount_points_button()
