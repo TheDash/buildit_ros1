@@ -1,14 +1,14 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(buildit_ros)
 
-find_package(catkin REQUIRED moveit_ros_visualization rviz visualization_msgs message_generation roscpp pluginlib visualization_marker_tutorials)
+find_package(catkin REQUIRED std_msgs moveit_ros_visualization rviz visualization_msgs message_generation roscpp pluginlib visualization_marker_tutorials)
 
 add_service_files(
    FILES
    InteractiveMountPoint.srv
 )
 
-generate_messages()
+generate_messages(DEPENDENCIES std_msgs)
 
 catkin_package(
 )

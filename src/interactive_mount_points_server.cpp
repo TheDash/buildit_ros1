@@ -11,6 +11,7 @@
 #include <buildit_ros/InteractiveMountPoint.h>
 
 using namespace visualization_msgs;
+
 // GLOBAL VARS
 static void alignMarker(const InteractiveMarkerFeedbackConstPtr&);
 static void processFeedback( const InteractiveMarkerFeedbackConstPtr&);
@@ -146,6 +147,28 @@ void alignMarker( const InteractiveMarkerFeedbackConstPtr &feedback )
 	server->applyChanges();
 }
 
+
+void frameCallback(const ros::TimerEvent&)
+{
+  static uint32_t counter = 0;
+
+  static tf::TransformBroadcaster br;
+
+  tf::Transform t;
+
+  ros::Time time = ros::Time::now();
+
+  t.setOrigin(tf::Vector3(0.0, 0.0, sin(float(counter)/140.0) * 2.0));
+  t.setRotation(tf::Quaternion(0.0, 0.0, 0.0, 1.0));
+  br.sendTransform(tf::StampedTransform(t, time, "base_link", "moving_frame"));
+
+  t.setOrigin(tf::Vector3(0.0, 0.0, 0.0));
+  t.setRotation(tf::createQuaternionFromRPY(0.0, float(counter)/140.0, 0.0));
+  br.sendTransform(tf::StampedTransform(t, time, "base_link", "rotating_frame"));
+
+  counter++;
+}
+
 // The server will have to spawn markers at the locations told, and be passed messages. 
 bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
 {
@@ -157,13 +180,32 @@ bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, 
 // Start interactive marker server 
 int main(int argc, char** argv)
 {
+
    ros::init(argc, argv, "interactive_mount_points_server");
    ros::NodeHandle n;
+   ros::Timer frame_timer = n.createTimer(ros::Duration(0.01), frameCallback);
+
+   server.reset( new interactive_markers::InteractiveMarkerServer("interactive_mount_points_server","",false) );
+
+   menu_handler.insert( "First Entry", &processFeedback );
+   menu_handler.insert( "Second Entry", &processFeedback );
+   interactive_markers::MenuHandler::EntryHandle sub_menu_handle = menu_handler.insert( "Submenu" );
+   menu_handler.insert( sub_menu_handle, "First Entry", &processFeedback );
+   menu_handler.insert( sub_menu_handle, "Second Entry", &processFeedback );
+
+   ros::Duration(0.1).sleep();
 
    ros::ServiceServer service = n.advertiseService("spawn_mount_point_marker", spawn_mount_point_marker);
    ROS_INFO("Ready to spawn mount points");
 
+   tf::Vector3 position = tf::Vector3( 3,-3, 0);
+   makeChessPieceMarker( position );
+
+   server->applyChanges();
+
    ros::spin();
+
+   server.reset();
 
   return 0;
 }
