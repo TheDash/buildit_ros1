@@ -2,12 +2,10 @@
 #include <buildit_ros/start_screen.h>
 #include <ros/ros.h>
 
-
 int main(int argc, char *argv[])
 {
 
     ros::init(argc, argv, "buildit_ros");
-    ros::NodeHandle nh;
 
     QApplication a(argc, argv);
     StartScreen start_screen;

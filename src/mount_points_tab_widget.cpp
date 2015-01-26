@@ -1,5 +1,7 @@
 #include <buildit_ros/mount_points_tab_widget.h>
 #include <buildit_ros/start_screen.h>
+#include <rviz/robot/robot.h>
+#include <rviz/robot/robot_link.h>
 
 using namespace visualization_msgs;
 
@@ -45,6 +47,9 @@ MountPointsTabWidget::~MountPointsTabWidget()
 // and create interactive markers at those link points
 void MountPointsTabWidget::create_mount_points_button_clicked()
 {
+
+     // for all the link names, call the service on marker server. 
+
 // Either need to spawn new thread.. or run another node. I think I'll port this over to another executable node to run the server. 
      /* server.reset( new interactive_markers::InteractiveMarkerServer("mount_points","",false) );
       ROS_INFO("Reset interactive markers server..");
@@ -59,18 +64,22 @@ menu_handler.insert( sub_menu_handle, "Second Entry", &processFeedback );
      makeChessPieceMarker( position );
 */
      // get selected mount points and create markers for them.
-    /* for (int i = 0; i < this->selected_links_table->rowCount(); i++)
+     for (int i = 0; i < this->selected_links_table->rowCount(); i++)
      {
          QTableWidgetItem* item = this->selected_links_table->item(i, 0);
          // get link name
          QString link = item->text();
          std::string link_name = link.toStdString();
-         
+       
+         // get link position
+        Ogre::Vector3 position = StartScreen::visualizationDisplay->robot_state_display_->robot_->getRobot().getLink(link_name)->getPosition();
+        
+         // Make service call
 
      }
 
-     ROS_INFO("Created mount points.");
-     server->applyChanges();*/
+     //ROS_INFO("Created mount points.");
+     //server->applyChanges();*/
 }
 
 void MountPointsTabWidget::create_create_mount_points_button()

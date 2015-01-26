@@ -3,7 +3,11 @@
 
 #include <QWidget>
 #include <rviz/default_plugin/interactive_marker_display.h>
+#define private public
+#define protected public
 #include <moveit/robot_state_rviz_plugin/robot_state_display.h>
+#undef protected
+#undef private
 #include <rviz/view_manager.h>
 #include <rviz/default_plugin/tools/interaction_tool.h>
 #include <rviz/tool_manager.h>

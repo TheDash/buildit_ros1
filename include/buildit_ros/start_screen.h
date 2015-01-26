@@ -33,6 +33,7 @@ class StartScreen : public QMainWindow
     
 public:
 
+    ros::NodeHandle nh;
     // Functions
     explicit StartScreen(QWidget *parent = 0);
     ~StartScreen();
