@@ -5,6 +5,8 @@
 #include <rviz/default_plugin/interactive_marker_display.h>
 #include <moveit/robot_state_rviz_plugin/robot_state_display.h>
 #include <rviz/view_manager.h>
+#include <rviz/default_plugin/tools/interaction_tool.h>
+#include <rviz/tool_manager.h>
 
 namespace rviz
 {
@@ -23,6 +25,7 @@ public:
   moveit_rviz_plugin::RobotStateDisplay* robot_state_display_;
   rviz::InteractiveMarkerDisplay * interactive_marker_display_;
   virtual ~MyViz();
+  rviz::InteractionTool * interaction_tool;
 
 private Q_SLOTS:
 	void setThickness( int thickness_percent );

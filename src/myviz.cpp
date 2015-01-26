@@ -71,9 +71,29 @@ MyViz::MyViz( QWidget* parent )
 
   manager_->addDisplay(robot_state_display_, true);
 
+  // Create an interaction tool..
+  rviz::ToolManager * tm = manager_->getToolManager();
+  tm->addTool( "rviz/Interact");
+
+  QStringList tools = tm->getToolClasses();
+  
+  //this->interaction_tool = new rviz::InteractionTool();
+
+  
+  //this->interaction_tool->initialize(render_panel_->getManager());
+  ROS_INFO("initialized interaction tool");
+  //this->interaction_tool->activate();
+  ROS_INFO("Activated interaction tool");
+  //this->interaction_tool->context_ = render_panel_->getContext();
+  
+  // Need to set things up so this works..
+  //this->interaction_tool->onInitialize(); 
+
   // Add the marker display here 
   interactive_marker_display_ = new rviz::InteractiveMarkerDisplay();
   interactive_marker_display_->setTopic(QString("/interactive_mount_points_server/update"), QString());
+
+
 
 
   manager_->addDisplay(interactive_marker_display_, true);
