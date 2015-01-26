@@ -65,7 +65,6 @@ MyViz::MyViz( QWidget* parent )
   manager_->startUpdate();
 
   manager_->setFixedFrame (QString::fromStdString("base_link"));
-  
   robot_state_display_ = new moveit_rviz_plugin::RobotStateDisplay();
   robot_state_display_->setName("Robot State");
 
@@ -77,24 +76,12 @@ MyViz::MyViz( QWidget* parent )
   rviz::Tool * default_tool = tm->getTool(1);
   tm->setDefaultTool(default_tool);
   tm->setCurrentTool(default_tool);  
-
   QStringList tools = tm->getToolClasses();
   ROS_INFO("The current tools are");
   for (int i = 0; i < tools.size(); i++)
   {
       ROS_INFO("Tool: %s", tools.at(i).toStdString().c_str());
   }
-  //this->interaction_tool = new rviz::InteractionTool();
-
-  
-  //this->interaction_tool->initialize(render_panel_->getManager());
-  ROS_INFO("initialized interaction tool");
-  //this->interaction_tool->activate();
-  ROS_INFO("Activated interaction tool");
-  //this->interaction_tool->context_ = render_panel_->getContext();
-  
-  // Need to set things up so this works..
-  //this->interaction_tool->onInitialize(); 
 
   // Add the marker display here 
   interactive_marker_display_ = new rviz::InteractiveMarkerDisplay();
