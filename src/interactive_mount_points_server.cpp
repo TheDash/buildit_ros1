@@ -10,6 +10,10 @@
 
 #include <buildit_ros/InteractiveMountPoint.h>
 
+#include <vector>
+#include <algorithm>
+#include <sstream>
+
 using namespace visualization_msgs;
 
 // GLOBAL VARS
@@ -331,12 +335,30 @@ void make6DofMarkerWithName(std::string& name, std::string& parent_name, bool fi
 
 }
 
+std::vector<std::string> marker_list;
+
 // The server will have to spawn markers at the locations told, and be passed messages. 
 bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
 {
    std::string name = req.link_name;
    std::string parent_name = req.parent_name;
 
+   marker_list.push_back(name);
+   ROS_INFO("Marker count %d", marker_list.size());
+   if (std::find(marker_list.begin(), marker_list.end(), name.c_str()) != marker_list.end())
+   {
+      int total = 0;
+      // count how many times its in there.
+      for (int i = 0; i < marker_list.size(); i++)
+      {
+         if (marker_list.at(i) == name)
+         {
+                total++;
+         }
+      }
+       std::string num = static_cast<std::ostringstream*>( &(std::ostringstream() << total) )->str();
+       name.append("_").append(num);
+   }
    // The position of the parent link should be passed in as a parameter.
    float x;
    float y;
