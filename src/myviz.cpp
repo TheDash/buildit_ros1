@@ -74,6 +74,8 @@ MyViz::MyViz( QWidget* parent )
   // Add the marker display here 
   interactive_marker_display_ = new rviz::InteractiveMarkerDisplay();
   interactive_marker_display_->setTopic(QString("/interactive_mount_points_server/update"), QString());
+
+
   manager_->addDisplay(interactive_marker_display_, true);
 
   // Set robot description

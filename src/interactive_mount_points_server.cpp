@@ -15,7 +15,7 @@ using namespace visualization_msgs;
 // GLOBAL VARS
 static void alignMarker(const InteractiveMarkerFeedbackConstPtr&);
 static void processFeedback( const InteractiveMarkerFeedbackConstPtr&);
-void makeChessPieceMarker(tf::Vector3& );
+void makeChessPieceMarker(const tf::Vector3& );
 
 boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server;
 interactive_markers::MenuHandler menu_handler;
@@ -39,16 +39,15 @@ Marker makeBox(InteractiveMarker &msg )
 
 
 //Taken from RViz tutorials 
-void makeChessPieceMarker(tf::Vector3& position)
+void makeChessPieceMarker( const tf::Vector3& position )
 {
-  // Get the position from the link name. 
   InteractiveMarker int_marker;
   int_marker.header.frame_id = "base_link";
   tf::pointTFToMsg(position, int_marker.pose.position);
   int_marker.scale = 1;
 
   int_marker.name = "chess_piece";
-  int_marker.description = "chess piece marker";
+  int_marker.description = "Chess Piece\n(2D Move + Alignment)";
 
   InteractiveMarkerControl control;
 
@@ -69,10 +68,8 @@ void makeChessPieceMarker(tf::Vector3& position)
   server->setCallback(int_marker.name, &processFeedback);
 
   // set different callback for POSE_UPDATE feedback
-  server->setCallback(int_marker.name, &alignMarker,   visualization_msgs::InteractiveMarkerFeedback::POSE_UPDATE );
-
+  server->setCallback(int_marker.name, &alignMarker, visualization_msgs::InteractiveMarkerFeedback::POSE_UPDATE );
 }
-
 
 void processFeedback( const InteractiveMarkerFeedbackConstPtr &feedback )
 {
