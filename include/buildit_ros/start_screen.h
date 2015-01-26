@@ -24,6 +24,7 @@
 #include <QtGui/QWidget>
 #include <buildit_ros/myviz.h>
 #include <buildit_ros/start_screen_tab_widget.h>
+
 QT_BEGIN_NAMESPACE
 
 
@@ -33,7 +34,6 @@ class StartScreen : public QMainWindow
     
 public:
 
-    ros::NodeHandle nh;
     // Functions
     explicit StartScreen(QWidget *parent = 0);
     ~StartScreen();

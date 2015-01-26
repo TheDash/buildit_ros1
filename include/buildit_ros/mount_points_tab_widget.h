@@ -20,6 +20,11 @@
 #include <interactive_markers/interactive_marker_server.h>
 #include <interactive_markers/menu_handler.h>
 #include <ros/ros.h>
+#include <buildit_ros/InteractiveMountPoint.h>
+#include <geometry_msgs/Vector3.h>
+#include <rviz/robot/robot.h>
+#include <rviz/robot/robot_link.h>
+
 
 using namespace visualization_msgs;
 
@@ -40,6 +45,8 @@ Q_OBJECT
         QTableWidget * selected_links_table;
 
         void load_robot_links();
+
+        ros::NodeHandle nh;
 
         void populate_links_table_after_button();
         void populate_links_table();

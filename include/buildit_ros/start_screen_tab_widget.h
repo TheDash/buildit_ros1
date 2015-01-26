@@ -1,3 +1,6 @@
+#ifndef START_SCREEN_TAB_WIDGET_H
+#define START_SCREEN_TAB_WIDGET_H
+
 #include <QTabWidget>
 #include <QString>
 #include <buildit_ros/mount_points_tab_widget.h>
@@ -21,3 +24,5 @@ class StartScreenTabWidget : public QTabWidget
         void addExportRobotTabWidget();
 
 };
+
+#endif

@@ -1,8 +1,5 @@
 #include <buildit_ros/mount_points_tab_widget.h>
-#include <buildit_ros/start_screen.h>
-#include <rviz/robot/robot.h>
-#include <rviz/robot/robot_link.h>
-
+#include <buildit_ros/start_screen.h>	
 using namespace visualization_msgs;
 
 
@@ -70,12 +67,17 @@ menu_handler.insert( sub_menu_handle, "Second Entry", &processFeedback );
          // get link name
          QString link = item->text();
          std::string link_name = link.toStdString();
-       
          // get link position
         Ogre::Vector3 position = StartScreen::visualizationDisplay->robot_state_display_->robot_->getRobot().getLink(link_name)->getPosition();
         
          // Make service call
-
+         ros::ServiceClient client = this->nh.serviceClient<buildit_ros::InteractiveMountPoint>("spawn_mount_point_marker");
+         buildit_ros::InteractiveMountPoint mp_msg;
+         mp_msg.request.link_name = link_name;
+         mp_msg.request.parent_name = link_name;
+         mp_msg.request.parent_position.x = position.x;
+         mp_msg.request.parent_position.y = position.y;
+         mp_msg.request.parent_position.z = position.z;
      }
 
      //ROS_INFO("Created mount points.");
