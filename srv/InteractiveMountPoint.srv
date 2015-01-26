@@ -1,3 +1,5 @@
 string link_name
+string parent_name
+geometry_msgs/Vector3 parent_position
 ---
 bool spawned

@@ -18,7 +18,7 @@ static void processFeedback( const InteractiveMarkerFeedbackConstPtr&);
 void makeChessPieceMarker(const tf::Vector3& );
 InteractiveMarkerControl& makeBoxControl(InteractiveMarker&);
 void make6DofMarker( bool fixed, unsigned int interaction_mode, const tf::Vector3& position, bool show_6dof );
-void make6DofMarkerWithName(std::string& name, bool fixed, unsigned int interaction_mode, const tf::Vector3& position, bool show_6dof );
+void make6DofMarkerWithName(std::string& name, std::string& parent_name, bool fixed, unsigned int interaction_mode, const tf::Vector3& position, bool show_6dof );
 
 boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server;
 interactive_markers::MenuHandler menu_handler;
@@ -254,8 +254,9 @@ void frameCallback(const ros::TimerEvent&)
   counter++;
 }
 
-void make6DofMarkerWithName(std::string& name, bool fixed, unsigned int interaction_mode, const tf::Vector3& position, bool show_6dof )
+void make6DofMarkerWithName(std::string& name, std::string& parent_name, bool fixed, unsigned int interaction_mode, const tf::Vector3& position, bool show_6dof )
 {
+
    InteractiveMarker int_marker;
   int_marker.header.frame_id = "base_link";
   tf::pointTFToMsg(position, int_marker.pose.position);
@@ -334,9 +335,19 @@ void make6DofMarkerWithName(std::string& name, bool fixed, unsigned int interact
 bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
 {
    std::string name = req.link_name;
+   std::string parent_name = req.parent_name;
+
+   // The position of the parent link should be passed in as a parameter.
+   float x;
+   float y;
+   float z;
+   x = req.parent_position.x;
+   y = req.parent_position.y;
+   z = req.parent_position.z;
+
    // Create 6dof marker with that link name. 
-   tf::Vector3 position = tf::Vector3( 3,-3, 0);
-   make6DofMarkerWithName( name, false, visualization_msgs::InteractiveMarkerControl::MOVE_ROTATE_3D, position, true );
+   tf::Vector3 position = tf::Vector3( x, y , z);
+   make6DofMarkerWithName( name, parent_name, false, visualization_msgs::InteractiveMarkerControl::MOVE_ROTATE_3D, position, true );
    res.spawned = true;
    server->applyChanges();
 
