@@ -64,7 +64,7 @@ MyViz::MyViz( QWidget* parent )
   manager_->initialize();
   manager_->startUpdate();
 
-  manager_->setFixedFrame (QString::fromStdString("base_footprint"));
+  manager_->setFixedFrame (QString::fromStdString("base_link"));
   
   robot_state_display_ = new moveit_rviz_plugin::RobotStateDisplay();
   robot_state_display_->setName("Robot State");
@@ -73,7 +73,7 @@ MyViz::MyViz( QWidget* parent )
 
   // Add the marker display here 
   interactive_marker_display_ = new rviz::InteractiveMarkerDisplay();
-  interactive_marker_display_->setTopic(QString("/mount_points/update"), QString());
+  interactive_marker_display_->setTopic(QString("/interactive_mount_points_server/update"), QString());
   manager_->addDisplay(interactive_marker_display_, true);
 
   // Set robot description

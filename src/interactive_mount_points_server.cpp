@@ -43,12 +43,12 @@ void makeChessPieceMarker(tf::Vector3& position)
 {
   // Get the position from the link name. 
   InteractiveMarker int_marker;
-  int_marker.header.frame_id = "back_right_wheel";
+  int_marker.header.frame_id = "base_link";
   tf::pointTFToMsg(position, int_marker.pose.position);
   int_marker.scale = 1;
 
-  int_marker.name = "back_right_wheel";
-  int_marker.description = "back_right_wheel";
+  int_marker.name = "chess_piece";
+  int_marker.description = "chess piece marker";
 
   InteractiveMarkerControl control;
 
