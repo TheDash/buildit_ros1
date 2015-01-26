@@ -78,6 +78,16 @@ menu_handler.insert( sub_menu_handle, "Second Entry", &processFeedback );
          mp_msg.request.parent_position.x = position.x;
          mp_msg.request.parent_position.y = position.y;
          mp_msg.request.parent_position.z = position.z;
+
+         // Send the call 
+         if (client.call(mp_msg))
+         {
+
+         }
+         else
+         {
+            ROS_INFO("Failed to send markers to server");
+         }
      }
 
      //ROS_INFO("Created mount points.");
