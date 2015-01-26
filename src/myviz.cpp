@@ -74,9 +74,16 @@ MyViz::MyViz( QWidget* parent )
   // Create an interaction tool..
   rviz::ToolManager * tm = manager_->getToolManager();
   tm->addTool( "rviz/Interact");
+  rviz::Tool * default_tool = tm->getTool(1);
+  tm->setDefaultTool(default_tool);
+  tm->setCurrentTool(default_tool);  
 
   QStringList tools = tm->getToolClasses();
-  
+  ROS_INFO("The current tools are");
+  for (int i = 0; i < tools.size(); i++)
+  {
+      ROS_INFO("Tool: %s", tools.at(i).toStdString().c_str());
+  }
   //this->interaction_tool = new rviz::InteractionTool();
 
   
