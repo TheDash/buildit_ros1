@@ -12,7 +12,7 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     text_block->setAlignment(Qt::AlignCenter);
  
     // Advertise orientation service
-    ros::ServiceServer or_srv = this->nh.advertiseService("set_marker_orientation_editor", &MountPointsTabWidget::set_marker_orientation_editor, this);
+    this->or_srv = this->nh.advertiseService("set_marker_orientation_editor", &MountPointsTabWidget::set_marker_orientation_editor, this);
     ROS_INFO("Ready to orientate markers.");
 
     this->load_robot_links();

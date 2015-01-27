@@ -54,7 +54,7 @@ Q_OBJECT
         void load_robot_links();
 
         ros::NodeHandle nh;
-
+        ros::ServiceServer or_srv;
         
 
         void populate_links_table_after_button();

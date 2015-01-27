@@ -219,6 +219,7 @@ void set_marker_orientation(const InteractiveMarkerFeedbackConstPtr & feedback)
    buildit_ros::SetOrientation or_msg;
    if (client.call(or_msg))
    {
+     ROS_INFO("Server contacted, spawning editor.");
       // Call worked and response was set. Continue moving markers.. 
    } else
    {
