@@ -6,6 +6,7 @@ find_package(catkin REQUIRED std_msgs moveit_ros_visualization rviz visualizatio
 add_service_files(
    FILES
    InteractiveMountPoint.srv
+   SetOrientation.srv
 )
 
 generate_messages(DEPENDENCIES std_msgs geometry_msgs)
@@ -44,7 +45,7 @@ set(SOURCE_FILES
 )
 
 add_executable(interactive_mount_points_server src/interactive_mount_points_server.cpp)
-target_link_libraries(interactive_mount_points_server ${catkin_LIBRARIES})
+target_link_libraries(interactive_mount_points_server ${catkin_LIBRARIES} ${QT_LIBRARIES})
 add_dependencies(interactive_mount_points_server interactive_mount_points_server_gencpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

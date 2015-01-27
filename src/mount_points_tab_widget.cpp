@@ -10,6 +10,10 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     QLabel * text_block = new QLabel(text_string, this);
     text_block->setGeometry(QRect(-25, 0, 900, 30));
     text_block->setAlignment(Qt::AlignCenter);
+ 
+    // Advertise orientation service
+    ros::ServiceServer or_srv = this->nh.advertiseService("set_marker_orientation_editor", &MountPointsTabWidget::set_marker_orientation_editor, this);
+    ROS_INFO("Ready to orientate markers.");
 
     this->load_robot_links();
     this->create_load_base_urdf_button();
@@ -33,11 +37,10 @@ MountPointsTabWidget::~MountPointsTabWidget()
 
 }
 
-
-
-void MountPointsTabWidget::set_mount_point_offset(geometry_msgs::Vector3& offset)
+bool MountPointsTabWidget::set_marker_orientation_editor(buildit_ros::SetOrientation::Request &req, buildit_ros::SetOrientation::Response &res)
 {
 
+   return true;
 }
 
 void MountPointsTabWidget::hide_mount_points_button_clicked()

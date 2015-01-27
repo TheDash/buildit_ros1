@@ -1,3 +1,4 @@
+
 #include <ros/ros.h>
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
@@ -9,26 +10,50 @@
 #include <visualization_msgs/InteractiveMarkerFeedback.h>
 
 #include <buildit_ros/InteractiveMountPoint.h>
+#include <buildit_ros/SetOrientation.h>
 
 #include <vector>
 #include <algorithm>
 #include <sstream>
 
+// GLOBAL VARS
+#define ATTACH_MENU_ID 1
+#define UNATTACH_MENU_ID 2
+#define SET_POSITION_MENU_ID 3
+#define SET_ORIENTATION_MENU_ID 4
+
+
+// NAMESPACING
 using namespace visualization_msgs;
 
-// GLOBAL VARS
+// FORWARD DECLARATIONS
 static void alignMarker(const InteractiveMarkerFeedbackConstPtr&);
+
 static void processFeedback( const InteractiveMarkerFeedbackConstPtr&);
+
 void makeChessPieceMarker(const tf::Vector3& );
 InteractiveMarkerControl& makeBoxControl(InteractiveMarker&);
+
 void make6DofMarker( bool fixed, unsigned int interaction_mode, const tf::Vector3& position, bool show_6dof );
+
 void make6DofMarkerWithName(std::string& name, std::string& parent_name, bool fixed, unsigned int interaction_mode, const tf::Vector3& position, bool show_6dof );
 
 boost::shared_ptr<interactive_markers::InteractiveMarkerServer> server;
-interactive_markers::MenuHandler menu_handler;
-visualization_msgs::Marker makeBox(InteractiveMarker&);  
-// END GLOBAL VARS
 
+interactive_markers::MenuHandler menu_handler;
+
+visualization_msgs::Marker makeBox(InteractiveMarker&);  
+
+void attach_marker_to_model(const InteractiveMarkerFeedbackConstPtr & feedback);
+
+void unattach_marker_to_model(const InteractiveMarkerFeedbackConstPtr & feedback);
+
+void set_marker_orientation(const InteractiveMarkerFeedbackConstPtr & feedback);
+
+void set_marker_position(const InteractiveMarkerFeedbackConstPtr & feedback);
+
+
+// BEGIN FUNCTION DEFINITIONS 
 InteractiveMarkerControl& makeBoxControl( InteractiveMarker &msg )
 {
   InteractiveMarkerControl control;
@@ -162,6 +187,51 @@ void make6DofMarker( bool fixed, unsigned int interaction_mode, const tf::Vector
     menu_handler.apply( *server, int_marker.name );
 }
 
+void attach_marker_to_model(const InteractiveMarkerFeedbackConstPtr & feedback)
+{
+
+
+}
+
+void unattach_marker_to_model(const InteractiveMarkerFeedbackConstPtr & feedback)
+{
+
+
+}
+
+void set_marker_orientation(const InteractiveMarkerFeedbackConstPtr & feedback)
+{
+     // Set the current position of the marker to be what is set. 
+     // User has to have a mode to input . 
+     // Small window that has xyz fields? How should this be done. 
+     //ROS_INFO("Showing edit marker window");
+     //marker_edit_window->show();
+     //ROS_INFO("Edit window shown.");
+     // I wonder if can just use RViz text thing? Get access to the other QApplication? Will need to anyway if want to contact the robot model.. But these are two separate mains. So need to communicate via service. Why not spawn Qappl?
+
+     // Nevermind, the above decision is terrible for design. Should just call the other object by including start screen and spawning it from the manager.. 
+    //marker_edit_window = new QWidget(StartScreen::visualizationDisplay); 
+    //marker_edit_window->show();
+   // allright fuk it ill have to make a service call back to the other application.. 
+   ros::NodeHandle n;
+   ros::ServiceClient client = n.serviceClient<buildit_ros::SetOrientation>("set_marker_orientation_editor");
+
+   buildit_ros::SetOrientation or_msg;
+   if (client.call(or_msg))
+   {
+      // Call worked and response was set. Continue moving markers.. 
+   } else
+   {
+      ROS_ERROR("Unable to contact service set_marker_orientation_editor");
+   }
+   
+}
+
+void set_marker_position(const InteractiveMarkerFeedbackConstPtr & feedback)
+{
+   
+
+}
 
 void processFeedback( const InteractiveMarkerFeedbackConstPtr &feedback )
 {
@@ -186,6 +256,26 @@ void processFeedback( const InteractiveMarkerFeedbackConstPtr &feedback )
 
     case visualization_msgs::InteractiveMarkerFeedback::MENU_SELECT:
       ROS_INFO_STREAM( s.str() << ": menu item " << feedback->menu_entry_id << " clicked" << mouse_point_ss.str() << "." );
+
+      switch (feedback->menu_entry_id)
+      {
+          case SET_POSITION_MENU_ID:
+              ROS_INFO("Setting Position. ");
+              set_marker_position(feedback);
+              break;
+          case SET_ORIENTATION_MENU_ID:
+              ROS_INFO("Setting Orientation.");
+              set_marker_orientation(feedback);
+              break;
+          case ATTACH_MENU_ID:
+              ROS_INFO("Attaching mount point. ");
+              attach_marker_to_model(feedback);
+              break;
+          case UNATTACH_MENU_ID:
+              ROS_INFO("Unattaching mount point.");
+              unattach_marker_to_model(feedback);
+              break;
+      }
       break;
 
     case visualization_msgs::InteractiveMarkerFeedback::POSE_UPDATE:
@@ -391,9 +481,11 @@ int main(int argc, char** argv)
 
    menu_handler.insert( "Attach", &processFeedback );
    menu_handler.insert( "Unattach", &processFeedback );
-   interactive_markers::MenuHandler::EntryHandle sub_menu_handle = menu_handler.insert( "Submenu" );
-   menu_handler.insert( sub_menu_handle, "Attach", &processFeedback );
-   menu_handler.insert( sub_menu_handle, "Unattach", &processFeedback );
+   menu_handler.insert( "Set Position", &processFeedback );
+   menu_handler.insert( "Set Orientation", &processFeedback);
+   //interactive_markers::MenuHandler::EntryHandle sub_menu_handle =    menu_handler.insert( "Submenu" );
+   //menu_handler.insert( sub_menu_handle, "Attach", &processFeedback );
+   //menu_handler.insert( sub_menu_handle, "Unattach", &processFeedback );
 
    ros::Duration(0.1).sleep();
 
