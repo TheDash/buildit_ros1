@@ -11,6 +11,7 @@
 
 #include <buildit_ros/InteractiveMountPoint.h>
 #include <buildit_ros/SetOrientation.h>
+#include <buildit_ros/SetPosition.h>
 
 #include <vector>
 #include <algorithm>
@@ -201,18 +202,6 @@ void unattach_marker_to_model(const InteractiveMarkerFeedbackConstPtr & feedback
 
 void set_marker_orientation(const InteractiveMarkerFeedbackConstPtr & feedback)
 {
-     // Set the current position of the marker to be what is set. 
-     // User has to have a mode to input . 
-     // Small window that has xyz fields? How should this be done. 
-     //ROS_INFO("Showing edit marker window");
-     //marker_edit_window->show();
-     //ROS_INFO("Edit window shown.");
-     // I wonder if can just use RViz text thing? Get access to the other QApplication? Will need to anyway if want to contact the robot model.. But these are two separate mains. So need to communicate via service. Why not spawn Qappl?
-
-     // Nevermind, the above decision is terrible for design. Should just call the other object by including start screen and spawning it from the manager.. 
-    //marker_edit_window = new QWidget(StartScreen::visualizationDisplay); 
-    //marker_edit_window->show();
-   // allright fuk it ill have to make a service call back to the other application.. 
    ros::NodeHandle n;
    ros::ServiceClient client = n.serviceClient<buildit_ros::SetOrientation>("set_marker_orientation_editor");
 
@@ -220,7 +209,6 @@ void set_marker_orientation(const InteractiveMarkerFeedbackConstPtr & feedback)
    if (client.call(or_msg))
    {
      ROS_INFO("Server contacted, spawning editor.");
-      // Call worked and response was set. Continue moving markers.. 
    } else
    {
       ROS_ERROR("Unable to contact service set_marker_orientation_editor");
@@ -230,7 +218,17 @@ void set_marker_orientation(const InteractiveMarkerFeedbackConstPtr & feedback)
 
 void set_marker_position(const InteractiveMarkerFeedbackConstPtr & feedback)
 {
-   
+     ros::NodeHandle n;
+   ros::ServiceClient client = n.serviceClient<buildit_ros::SetPosition>("set_marker_position_editor");
+
+   buildit_ros::SetPosition pos_msg;
+   if (client.call(pos_msg))
+   {
+     ROS_INFO("Server contacted, spawning editor.");
+   } else
+   {
+      ROS_ERROR("Unable to contact service set_marker_position_editor");
+   }
 
 }
 

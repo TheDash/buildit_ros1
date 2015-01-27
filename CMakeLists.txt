@@ -7,6 +7,7 @@ add_service_files(
    FILES
    InteractiveMountPoint.srv
    SetOrientation.srv
+   SetPosition.srv
 )
 
 generate_messages(DEPENDENCIES std_msgs geometry_msgs)
@@ -46,12 +47,13 @@ set(SOURCE_FILES
 
 add_executable(interactive_mount_points_server src/interactive_mount_points_server.cpp)
 target_link_libraries(interactive_mount_points_server ${catkin_LIBRARIES} ${QT_LIBRARIES})
-add_dependencies(interactive_mount_points_server interactive_mount_points_server_gencpp)
+add_dependencies(interactive_mount_points_server interactive_mount_points_server_gencpp ${catkin_EXPORTED_TARGETS})
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
 #add_library(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${catkin_LIBRARIES} default_plugin ${QT_LIBRARIES})
+add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 
 install(TARGETS
 	${PROJECT_NAME}

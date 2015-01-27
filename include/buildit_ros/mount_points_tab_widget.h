@@ -26,6 +26,7 @@
 #include <rviz/robot/robot_link.h>
 #include <rviz/visualization_manager.h>
 #include <buildit_ros/SetOrientation.h>
+#include <buildit_ros/SetPosition.h>
 
 #include <visualization_msgs/InteractiveMarkerControl.h>
 #include <visualization_msgs/InteractiveMarker.h>
@@ -40,6 +41,7 @@ Q_OBJECT
         MountPointsTabWidget(QWidget * parent = 0);
         ~MountPointsTabWidget();
         bool set_marker_orientation_editor(buildit_ros::SetOrientation::Request&, buildit_ros::SetOrientation::Response&);
+        bool set_marker_position_editor(buildit_ros::SetPosition::Request&, buildit_ros::SetPosition::Response&);
 
     private:
         QPushButton * load_urdf_base_button;
@@ -55,7 +57,7 @@ Q_OBJECT
 
         ros::NodeHandle nh;
         ros::ServiceServer or_srv;
-        
+        ros::ServiceServer pos_srv;
 
         void populate_links_table_after_button();
         void populate_links_table();

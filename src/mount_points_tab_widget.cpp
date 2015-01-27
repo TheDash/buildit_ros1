@@ -15,6 +15,14 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     this->or_srv = this->nh.advertiseService("set_marker_orientation_editor", &MountPointsTabWidget::set_marker_orientation_editor, this);
     ROS_INFO("Ready to orientate markers.");
 
+    // Advertise position service
+    this->pos_srv = this->nh.advertiseService("set_marker_position_editor", &MountPointsTabWidget::set_marker_position_editor, this);
+    ROS_INFO("Ready to position markers.");
+
+    // Advertise attach service
+
+    // Advertise unattach service 
+
     this->load_robot_links();
     this->create_load_base_urdf_button();
     this->create_create_mount_points_button();
@@ -38,6 +46,12 @@ MountPointsTabWidget::~MountPointsTabWidget()
 }
 
 bool MountPointsTabWidget::set_marker_orientation_editor(buildit_ros::SetOrientation::Request &req, buildit_ros::SetOrientation::Response &res)
+{
+
+   return true;
+}
+
+bool MountPointsTabWidget::set_marker_position_editor(buildit_ros::SetPosition::Request &req, buildit_ros::SetPosition::Response &res)
 {
 
    return true;
