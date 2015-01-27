@@ -30,13 +30,13 @@ public:
   rviz::InteractiveMarkerDisplay * interactive_marker_display_;
   virtual ~MyViz();
   rviz::InteractionTool * interaction_tool;
+  rviz::VisualizationManager* manager_;
 
 private Q_SLOTS:
 	void setThickness( int thickness_percent );
 	void setCellSize( int cell_size_percent );
 
 private:
-  rviz::VisualizationManager* manager_;
   rviz::RenderPanel* render_panel_;
   rviz::Display* grid_;
   rviz::Display* robot_model_;

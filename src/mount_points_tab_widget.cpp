@@ -11,27 +11,20 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     text_block->setGeometry(QRect(-25, 0, 900, 30));
     text_block->setAlignment(Qt::AlignCenter);
 
-    // If there's currently a model, load it. 
     this->load_robot_links();
-    // If there isn't a model, load robot links will be called inside this fn. 
     this->create_load_base_urdf_button();
-    // This table will be populated later when the load model button is pressed
     this->create_create_mount_points_button();
-
-    // The table should only be created once.. 
     this->create_mount_points_table_widget();
 
-    // Check if there's currently a robot in the scene
      if (!this->links.empty())
     {
-        // This will create the table and then populate it since there is a robot in the scene.. ok it seems that the table has to be populated before being loaded? what the fuk
 	ROS_INFO("Populating links table!");
         this->populate_links_table();
     }
     this->create_selected_mount_points_table_widget();
     this->create_mount_button();
     this->create_unmount_button();
-
+    this->create_hide_mount_points_button();
 }
 
 
@@ -40,33 +33,59 @@ MountPointsTabWidget::~MountPointsTabWidget()
 
 }
 
+
+
+void MountPointsTabWidget::set_mount_point_offset(geometry_msgs::Vector3& offset)
+{
+
+}
+
+void MountPointsTabWidget::hide_mount_points_button_clicked()
+{
+       rviz::VisualizationManager * vm = StartScreen::visualizationDisplay->manager_;
+       rviz::ToolManager * tm = vm->getToolManager();
+
+   if (this->hide_mount_points_button->text().toStdString() == "Hide Markers")
+   {
+       // It is in hide marker state. Hide the markers, and set the button to be the show markers button
+       this->hide_mount_points_button->setText(QString("Show Markers"));
+
+       // As well, change the current tool to be just MoveCamera.
+       rviz::Tool * t = tm->getTool(0);
+       tm->setCurrentTool(t);
+   } else
+   {
+       rviz::Tool * t = tm->getTool(1);
+       tm->setCurrentTool(t);
+       this->hide_mount_points_button->setText(QString("Hide Markers"));
+   }
+
+}
+
+void MountPointsTabWidget::create_hide_mount_points_button()
+{
+    hide_mount_points_button = new QPushButton(QString(QString::fromStdString("Hide Markers")), this);
+    hide_mount_points_button->setGeometry(QRect(150, 80, 180, 50));
+    hide_mount_points_button->setVisible(true);
+
+     connect(this->hide_mount_points_button, SIGNAL(clicked()), this, SLOT(hide_mount_points_button_clicked()));
+
+}
+
+
 // This will take all of the links selected in the selected table
 // and create interactive markers at those link points
 void MountPointsTabWidget::create_mount_points_button_clicked()
 {
-
-     // for all the link names, call the service on marker server. 
-
-// Either need to spawn new thread.. or run another node. I think I'll port this over to another executable node to run the server. 
-     /* server.reset( new interactive_markers::InteractiveMarkerServer("mount_points","",false) );
-      ROS_INFO("Reset interactive markers server..");
-
-      menu_handler.insert( "First Entry", &processFeedback );
-      menu_handler.insert( "Second Entry", &processFeedback );
-      interactive_markers::MenuHandler::EntryHandle sub_menu_handle =     menu_handler.insert( "Submenu" );
-menu_handler.insert( sub_menu_handle, "First Entry", &processFeedback );
-menu_handler.insert( sub_menu_handle, "Second Entry", &processFeedback );
-
-     tf::Vector3 position = tf::Vector3( 3,-3, 0);
-     makeChessPieceMarker( position );
-*/
      // get selected mount points and create markers for them.
      for (int i = 0; i < this->selected_links_table->rowCount(); i++)
      {
          QTableWidgetItem* item = this->selected_links_table->item(i, 0);
+
          // get link name
          QString link = item->text();
          std::string link_name = link.toStdString();
+
          // get link position
         Ogre::Vector3 position = StartScreen::visualizationDisplay->robot_state_display_->robot_->getRobot().getLink(link_name)->getPosition();
         
@@ -89,9 +108,6 @@ menu_handler.insert( sub_menu_handle, "Second Entry", &processFeedback );
             ROS_INFO("Failed to send markers to server");
          }
      }
-
-     //ROS_INFO("Created mount points.");
-     //server->applyChanges();*/
 }
 
 void MountPointsTabWidget::create_create_mount_points_button()

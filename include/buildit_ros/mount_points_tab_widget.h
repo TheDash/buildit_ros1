@@ -24,6 +24,7 @@
 #include <geometry_msgs/Vector3.h>
 #include <rviz/robot/robot.h>
 #include <rviz/robot/robot_link.h>
+#include <rviz/visualization_manager.h>
 
 
 using namespace visualization_msgs;
@@ -40,7 +41,8 @@ Q_OBJECT
         QPushButton * mount_button;
         QPushButton * unmount_button;
         QPushButton * create_mount_points_button;
-  
+        QPushButton * hide_mount_points_button;  
+
         QTableWidget * links_table;
         QTableWidget * selected_links_table;
 
@@ -48,10 +50,12 @@ Q_OBJECT
 
         ros::NodeHandle nh;
 
+        void set_mount_point_offset(geometry_msgs::Vector3&);
         void populate_links_table_after_button();
         void populate_links_table();
         void create_create_mount_points_button();
         void create_load_base_urdf_button();
+        void create_hide_mount_points_button();
         void create_mount_points_table_widget(); 
         void create_selected_mount_points_table_widget();
         void create_mount_button();
@@ -59,6 +63,7 @@ Q_OBJECT
         std::vector<const robot_model::LinkModel*> links;
         std::vector<const robot_model::LinkModel*> mount_point_links;
    private Q_SLOTS:
+        void hide_mount_points_button_clicked();
         void create_mount_points_button_clicked();
         void load_urdf_base_button_clicked();
         void mount_button_clicked();
