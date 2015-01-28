@@ -9,6 +9,7 @@
 #include <visualization_msgs/InteractiveMarker.h>
 #include <visualization_msgs/InteractiveMarkerFeedback.h>
 
+#include <buildit_ros/UpdateInteractiveMountPoint.h>
 #include <buildit_ros/InteractiveMountPoint.h>
 #include <buildit_ros/SetOrientation.h>
 #include <buildit_ros/SetPosition.h>
@@ -53,6 +54,7 @@ void set_marker_orientation(const InteractiveMarkerFeedbackConstPtr & feedback);
 
 void set_marker_position(const InteractiveMarkerFeedbackConstPtr & feedback);
 
+bool update_mount_point_marker(buildit_ros::UpdateInteractiveMountPoint::Request &req, buildit_ros::UpdateInteractiveMountPoint::Response &res);
 
 // BEGIN FUNCTION DEFINITIONS 
 InteractiveMarkerControl& makeBoxControl( InteractiveMarker &msg )
@@ -428,6 +430,14 @@ void make6DofMarkerWithName(std::string& name, std::string& parent_name, bool fi
 
 std::vector<std::string> marker_list;
 
+// Removes the marker from the server
+bool update_mount_point_marker(buildit_ros::UpdateInteractiveMountPoint::Request &req, buildit_ros::UpdateInteractiveMountPoint::Response &res)
+{
+   server->setPose(req.marker_name, req.new_pose);
+   server->applyChanges();
+   ROS_INFO("Successfully updated marker %s", req.marker_name.c_str());
+}
+
 // The server will have to spawn markers at the locations told, and be passed messages. 
 bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
 {
@@ -493,9 +503,8 @@ int main(int argc, char** argv)
    ros::ServiceServer service = n.advertiseService("spawn_mount_point_marker", spawn_mount_point_marker);
    ROS_INFO("Ready to spawn mount points");
 
-   //tf::Vector3 position = tf::Vector3( 3,-3, 0);
-   //make6DofMarker( false, visualization_msgs::InteractiveMarkerControl::MOVE_ROTATE_3D, position, true );
-   //makeChessPieceMarker( position );
+   ros::ServiceServer remove_service = n.advertiseService("update_mount_point_marker", update_mount_point_marker);
+   ROS_INFO("Ready to update mount points");
 
    server->applyChanges();
 

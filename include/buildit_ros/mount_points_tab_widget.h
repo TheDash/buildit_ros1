@@ -10,25 +10,25 @@
 #include <QTableWidget>
 #include <QList>
 #include <QFileDialog>
+#include <QProcess>
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_model/link_model.h>
 #include <fstream>
-#include <QProcess>
-#include <visualization_msgs/InteractiveMarkerControl.h>
-#include <visualization_msgs/InteractiveMarker.h>
-#include <visualization_msgs/InteractiveMarkerFeedback.h>
+
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
 #include <interactive_markers/interactive_marker_server.h>
 #include <interactive_markers/menu_handler.h>
 #include <ros/ros.h>
-#include <buildit_ros/InteractiveMountPoint.h>
 #include <geometry_msgs/Vector3.h>
 #include <rviz/robot/robot.h>
 #include <rviz/robot/robot_link.h>
 #include <rviz/visualization_manager.h>
+
+#include <buildit_ros/InteractiveMountPoint.h>
 #include <buildit_ros/SetOrientation.h>
 #include <buildit_ros/SetPosition.h>
+#include <buildit_ros/UpdateInteractiveMountPoint.h>
 
 #include <visualization_msgs/InteractiveMarkerControl.h>
 #include <visualization_msgs/InteractiveMarker.h>

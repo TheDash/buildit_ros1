@@ -53,17 +53,24 @@ void MountPointsTabWidget::set_position_button_clicked()
    this->xpos = pos_x_tb->text().toDouble();
    this->ypos = pos_y_tb->text().toDouble();
    this->zpos = pos_z_tb->text().toDouble();
-   // Call the marker server and update the position of that marker. 
 
-   // The design decision is this: remove current marker, remake the same one but at a different location. fuk that would be hard.. would require knowing what marker was sent in
-   // so pass the marker that was selected into the service call?
+   ros::ServiceClient remove_marker = this->nh.serviceClient<buildit_ros::UpdateInteractiveMountPoint>("update_mount_point_marker");
+   buildit_ros::UpdateInteractiveMountPoint mp_msg;
+   mp_msg.request.marker_name = edited_marker.marker_name;
+   geometry_msgs::Pose p;
+   p.position.x = this->xpos;
+   p.position.y = this->ypos;
+   p.position.z = this->zpos;
+   mp_msg.request.new_pose = p; 
 
-   //this->position_editor-close();
-
-   // The update button on the editor will change position of the markers and so call the marker server to change things..
-
-   // The set position should update. actually no need for update button. Close should close window.
-
+   if (remove_marker.call(mp_msg))
+   {
+      ROS_INFO("Updating marker on server %s", edited_marker.marker_name.c_str());
+   } 
+   else 
+   {
+      ROS_INFO("Failed to update marker on server.");
+   }
    
 }
 
@@ -152,7 +159,6 @@ bool MountPointsTabWidget::set_marker_orientation_editor(buildit_ros::SetOrienta
 
 bool MountPointsTabWidget::set_marker_position_editor(buildit_ros::SetPosition::Request &req, buildit_ros::SetPosition::Response &res)
 {
-
    edited_marker = req.marker_info;
    position_editor->show();
    return true;
