@@ -6,13 +6,12 @@
 
   <maintainer email="dash@clearpathrobotics.com">Devon Ash</maintainer>
 
-  <license>BSD</license>
+  <license>GPL. You may contact for a waiver on this license.</license>
 
   <author email="dash@clearpathrobotics.com">Devon Ash</author>
   <author email="bvondervoort@clearpathrobotics.com">Bryce Vondervoort</author>
   <author email="mtanguay@clearpathrobotics.com">Matthieu Tanguay</author>
   <author email="jschmidt@clearpathrobotics.com">Jeff Schmidt</author>
-
 
   <buildtool_depend>catkin</buildtool_depend>
 
