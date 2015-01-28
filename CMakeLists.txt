@@ -10,7 +10,7 @@ add_service_files(
    SetPosition.srv
 )
 
-generate_messages(DEPENDENCIES std_msgs geometry_msgs)
+generate_messages(DEPENDENCIES std_msgs geometry_msgs visualization_msgs)
 
 catkin_package(
 )
@@ -47,7 +47,7 @@ set(SOURCE_FILES
 
 add_executable(interactive_mount_points_server src/interactive_mount_points_server.cpp)
 target_link_libraries(interactive_mount_points_server ${catkin_LIBRARIES} ${QT_LIBRARIES})
-add_dependencies(interactive_mount_points_server interactive_mount_points_server_gencpp ${catkin_EXPORTED_TARGETS})
+add_dependencies(interactive_mount_points_server interactive_mount_points_server_gencpp ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 

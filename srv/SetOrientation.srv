@@ -1,2 +1,3 @@
+visualization_msgs/InteractiveMarkerFeedback marker_info
 ---
 geometry_msgs/Pose orientation

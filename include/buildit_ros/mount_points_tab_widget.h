@@ -1,6 +1,8 @@
 #ifndef MOUNT_POINTS_TAB_WIDGET_H
 #define MOUNT_POINTS_TAB_WIDGET_H
 
+#include <QDoubleValidator>
+#include <QLineEdit>
 #include <QWidget>
 #include <QPushButton>
 #include <QString>
@@ -42,13 +44,36 @@ Q_OBJECT
         ~MountPointsTabWidget();
         bool set_marker_orientation_editor(buildit_ros::SetOrientation::Request&, buildit_ros::SetOrientation::Response&);
         bool set_marker_position_editor(buildit_ros::SetPosition::Request&, buildit_ros::SetPosition::Response&);
+  
 
     private:
+        QLineEdit * pos_x_tb;
+        QLineEdit * pos_y_tb;
+        QLineEdit * pos_z_tb;
+        QLineEdit * or_r_tb;
+        QLineEdit * or_p_tb;
+        QLineEdit * or_y_tb;
+
+        visualization_msgs::InteractiveMarkerFeedback edited_marker;
+
+        double ypos;
+        double xpos;
+        double zpos;
+        double orr;
+        double orp;
+        double ory;
+
+        QWidget * orientation_editor;
+        QWidget * position_editor;      
+
+        QPushButton * set_position_button;
+        QPushButton * set_orientation_button;
         QPushButton * load_urdf_base_button;
         QPushButton * mount_button;
         QPushButton * unmount_button;
         QPushButton * create_mount_points_button;
         QPushButton * hide_mount_points_button;  
+
 
         QTableWidget * links_table;
         QTableWidget * selected_links_table;
@@ -59,6 +84,8 @@ Q_OBJECT
         ros::ServiceServer or_srv;
         ros::ServiceServer pos_srv;
 
+        void create_marker_position_editor();
+        void create_marker_orientation_editor();
         void populate_links_table_after_button();
         void populate_links_table();
         void create_create_mount_points_button();
@@ -70,7 +97,10 @@ Q_OBJECT
         void create_unmount_button();
         std::vector<const robot_model::LinkModel*> links;
         std::vector<const robot_model::LinkModel*> mount_point_links;
+
    private Q_SLOTS:
+        void set_position_button_clicked();
+        void set_orientation_button_clicked();
         void hide_mount_points_button_clicked();
         void create_mount_points_button_clicked();
         void load_urdf_base_button_clicked();

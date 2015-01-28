@@ -37,6 +37,8 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     this->create_mount_button();
     this->create_unmount_button();
     this->create_hide_mount_points_button();
+    this->create_marker_orientation_editor();
+    this->create_marker_position_editor();
 }
 
 
@@ -45,15 +47,114 @@ MountPointsTabWidget::~MountPointsTabWidget()
 
 }
 
-bool MountPointsTabWidget::set_marker_orientation_editor(buildit_ros::SetOrientation::Request &req, buildit_ros::SetOrientation::Response &res)
+void MountPointsTabWidget::set_position_button_clicked()
+{
+   // on click parse what's inside the text box.
+   this->xpos = pos_x_tb->text().toDouble();
+   this->ypos = pos_y_tb->text().toDouble();
+   this->zpos = pos_z_tb->text().toDouble();
+   // Call the marker server and update the position of that marker. 
+
+   // The design decision is this: remove current marker, remake the same one but at a different location. fuk that would be hard.. would require knowing what marker was sent in
+   // so pass the marker that was selected into the service call?
+
+   //this->position_editor-close();
+
+   // The update button on the editor will change position of the markers and so call the marker server to change things..
+
+   // The set position should update. actually no need for update button. Close should close window.
+
+   
+}
+
+void MountPointsTabWidget::set_orientation_button_clicked()
 {
 
+
+}
+
+void MountPointsTabWidget::create_marker_position_editor()
+{
+   position_editor = new QWidget();
+   position_editor->setWindowTitle("Mount point editor");
+   position_editor->setGeometry(500, 500, 400, 200);
+
+   QGridLayout * layout = new QGridLayout(position_editor);
+
+   set_position_button = new QPushButton("Set Position");
+
+   pos_x_tb = new QLineEdit(position_editor);
+   pos_x_tb->setValidator(new QDoubleValidator(-100, 100, 3, position_editor));
+
+   pos_y_tb = new QLineEdit(position_editor);
+   pos_y_tb->setValidator(new QDoubleValidator(-100, 100, 3, position_editor));
+
+   pos_z_tb = new QLineEdit(position_editor);
+   pos_z_tb->setValidator(new QDoubleValidator(-100, 100, 3, position_editor));
+
+   QLabel * x = new QLabel("x:");
+   QLabel * y = new QLabel("y:");
+   QLabel * z = new QLabel("z:");
+
+   // Add widget to grid. ROW then COL.
+   layout->addWidget(x, 0, 0);
+   layout->addWidget(y, 1, 0);
+   layout->addWidget(z, 2, 0);
+
+   layout->addWidget(pos_x_tb, 0, 1);
+   layout->addWidget(pos_y_tb, 1, 1);
+   layout->addWidget(pos_z_tb, 2, 1);
+   // Position the editors and labels
+
+   layout->addWidget(set_position_button, 3, 1);
+
+}
+
+void MountPointsTabWidget::create_marker_orientation_editor()
+{
+   orientation_editor = new QWidget();
+   orientation_editor->setWindowTitle("Mount point editor");
+   orientation_editor->setGeometry(500, 500, 400, 200);
+
+   QGridLayout * layout = new QGridLayout(orientation_editor);
+
+   set_orientation_button = new QPushButton("Set Orientation");
+
+   or_r_tb = new QLineEdit(orientation_editor);
+   or_p_tb = new QLineEdit(orientation_editor);
+   or_y_tb = new QLineEdit(orientation_editor);
+
+   QLabel * r = new QLabel("r:");
+   QLabel * p = new QLabel("p:");
+   QLabel * y = new QLabel("y:");
+
+   // Add widget to grid. ROW then COL.
+   layout->addWidget(r, 0, 0);
+   layout->addWidget(p, 1, 0);
+   layout->addWidget(y, 2, 0);
+
+   layout->addWidget(or_r_tb, 0, 1);
+   layout->addWidget(or_p_tb, 1, 1);
+   layout->addWidget(or_y_tb, 2, 1);
+   // Position the editors and labels
+
+   layout->addWidget(set_orientation_button, 3, 1);
+}
+
+bool MountPointsTabWidget::set_marker_orientation_editor(buildit_ros::SetOrientation::Request &req, buildit_ros::SetOrientation::Response &res)
+{
+   orientation_editor->show();
+   // Thread that waits until button is clicked from that editor, and then sets the values for the message and sends. 
+   	
+ 
    return true;
 }
 
 bool MountPointsTabWidget::set_marker_position_editor(buildit_ros::SetPosition::Request &req, buildit_ros::SetPosition::Response &res)
 {
 
+   edited_marker = req.marker_info;
+   position_editor->show();
    return true;
 }
 

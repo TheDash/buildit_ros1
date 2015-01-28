@@ -206,6 +206,7 @@ void set_marker_orientation(const InteractiveMarkerFeedbackConstPtr & feedback)
    ros::ServiceClient client = n.serviceClient<buildit_ros::SetOrientation>("set_marker_orientation_editor");
 
    buildit_ros::SetOrientation or_msg;
+   or_msg.request.marker_info = *feedback.get();
    if (client.call(or_msg))
    {
      ROS_INFO("Server contacted, spawning editor.");
@@ -222,6 +223,7 @@ void set_marker_position(const InteractiveMarkerFeedbackConstPtr & feedback)
    ros::ServiceClient client = n.serviceClient<buildit_ros::SetPosition>("set_marker_position_editor");
 
    buildit_ros::SetPosition pos_msg;
+   pos_msg.request.marker_info = *feedback.get();
    if (client.call(pos_msg))
    {
      ROS_INFO("Server contacted, spawning editor.");
