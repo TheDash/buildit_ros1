@@ -29,6 +29,7 @@
 #include <buildit_ros/SetOrientation.h>
 #include <buildit_ros/SetPosition.h>
 #include <buildit_ros/UpdateInteractiveMountPoint.h>
+#include <buildit_ros/buildit_config.h>
 
 #include <visualization_msgs/InteractiveMarkerControl.h>
 #include <visualization_msgs/InteractiveMarker.h>
