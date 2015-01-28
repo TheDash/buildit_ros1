@@ -76,7 +76,29 @@ void MountPointsTabWidget::set_position_button_clicked()
 
 void MountPointsTabWidget::set_orientation_button_clicked()
 {
+      // on click parse what's inside the text box.
+   this->orr = or_r_tb->text().toDouble();
+   this->orp = or_p_tb->text().toDouble();
+   this->ory = or_y_tb->text().toDouble();
 
+   ros::ServiceClient remove_marker = this->nh.serviceClient<buildit_ros::UpdateInteractiveMountPoint>("update_mount_point_marker");
+   buildit_ros::UpdateInteractiveMountPoint mp_msg;
+   mp_msg.request.marker_name = edited_marker.marker_name;
+   geometry_msgs::Pose p;
+   
+   p.orientation.x = this->orr;
+   p.orientation.y = this->orp;
+   p.orientation.z = this->ory;
+   mp_msg.request.new_pose = p; 
+
+   if (remove_marker.call(mp_msg))
+   {
+      ROS_INFO("Updating marker on server %s", edited_marker.marker_name.c_str());
+   } 
+   else 
+   {
+      ROS_INFO("Failed to update marker on server.");
+   }
 
 }
 
@@ -115,6 +137,10 @@ void MountPointsTabWidget::create_marker_position_editor()
 
    layout->addWidget(set_position_button, 3, 1);
 
+   // Forogt to connect..
+   connect(this->set_position_button, SIGNAL(clicked()), this, SLOT(set_position_button_clicked()));
+
+
 }
 
 void MountPointsTabWidget::create_marker_orientation_editor()
@@ -146,6 +172,8 @@ void MountPointsTabWidget::create_marker_orientation_editor()
    // Position the editors and labels
 
    layout->addWidget(set_orientation_button, 3, 1);
+
+   connect(this->set_orientation_button, SIGNAL(clicked()), this, SLOT(set_orientation_button_clicked()));
 }
 
 bool MountPointsTabWidget::set_marker_orientation_editor(buildit_ros::SetOrientation::Request &req, buildit_ros::SetOrientation::Response &res)
