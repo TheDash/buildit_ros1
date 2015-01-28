@@ -17,6 +17,7 @@
 #include <vector>
 #include <algorithm>
 #include <sstream>
+#include <map>
 
 // GLOBAL VARS
 #define ATTACH_MENU_ID 1
@@ -55,7 +56,7 @@ void set_marker_orientation(const InteractiveMarkerFeedbackConstPtr & feedback);
 void set_marker_position(const InteractiveMarkerFeedbackConstPtr & feedback);
 
 bool update_mount_point_marker(buildit_ros::UpdateInteractiveMountPoint::Request &req, buildit_ros::UpdateInteractiveMountPoint::Response &res);
-
+std::map<std::string, geometry_msgs::Vector3> parent_positions;
 // BEGIN FUNCTION DEFINITIONS 
 InteractiveMarkerControl& makeBoxControl( InteractiveMarker &msg )
 {
@@ -433,6 +434,16 @@ std::vector<std::string> marker_list;
 // Removes the marker from the server
 bool update_mount_point_marker(buildit_ros::UpdateInteractiveMountPoint::Request &req, buildit_ros::UpdateInteractiveMountPoint::Response &res)
 {
+   // ok ... so the new position needs to be relative to the parent position. so new_pose is specified relative to the parent. How to pass in that vector to set pose? Well, i'd need to specify it as a link on the model. 
+   geometry_msgs::Vector3 parent_pos = parent_positions[req.marker_name];
+   tf::Vector3 parent(parent_pos.x, parent_pos.y, parent_pos.z);
+   tf::Vector3 curr(req.new_pose.position.x, req.new_pose.position.y, req.new_pose.position.z);
+   tf::Vector3 new_pos = parent + curr;
+
+   req.new_pose.position.x = new_pos.getX();
+   req.new_pose.position.y = new_pos.getY();
+   req.new_pose.position.z = new_pos.getZ();
+
    server->setPose(req.marker_name, req.new_pose);
    server->applyChanges();
    ROS_INFO("Successfully updated marker %s", req.marker_name.c_str());
@@ -469,6 +480,9 @@ bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, 
    x = req.parent_position.x;
    y = req.parent_position.y;
    z = req.parent_position.z;
+
+   // Save parent_position object in map with the link_name, so that it can be queried. 
+   parent_positions[req.link_name] = req.parent_position;
 
    // Create 6dof marker with that link name. 
    tf::Vector3 position = tf::Vector3( x, y , z);
