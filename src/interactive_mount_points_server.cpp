@@ -360,8 +360,8 @@ void make6DofMarkerWithName(std::string& name, std::string& parent_name, bool fi
   tf::pointTFToMsg(position, int_marker.pose.position);
   int_marker.scale = 1;
 
-  int_marker.name = name + "mount point";
-  int_marker.description =  name + "mount point";
+  int_marker.name = name;
+  int_marker.description = name + "mount point";
 
   // insert a box
   makeBoxControl(int_marker);
@@ -382,7 +382,7 @@ void make6DofMarkerWithName(std::string& name, std::string& parent_name, bool fi
       if( interaction_mode == visualization_msgs::InteractiveMarkerControl::MOVE_3D )         mode_text = "MOVE_3D";
       if( interaction_mode == visualization_msgs::InteractiveMarkerControl::ROTATE_3D )       mode_text = "ROTATE_3D";
       if( interaction_mode == visualization_msgs::InteractiveMarkerControl::MOVE_ROTATE_3D )  mode_text = "MOVE_ROTATE_3D";
-      int_marker.name += "_" + mode_text;
+      //int_marker.name += "_" + mode_text;
       int_marker.description = name + " mount point";
   }
 
@@ -482,7 +482,7 @@ bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, 
    z = req.parent_position.z;
 
    // Save parent_position object in map with the link_name, so that it can be queried. 
-   parent_positions[req.link_name] = req.parent_position;
+   parent_positions[name] = req.parent_position;
 
    // Create 6dof marker with that link name. 
    tf::Vector3 position = tf::Vector3( x, y , z);
