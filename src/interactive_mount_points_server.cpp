@@ -436,6 +436,8 @@ bool update_mount_point_marker(buildit_ros::UpdateInteractiveMountPoint::Request
    server->setPose(req.marker_name, req.new_pose);
    server->applyChanges();
    ROS_INFO("Successfully updated marker %s", req.marker_name.c_str());
+
+   return true;
 }
 
 // The server will have to spawn markers at the locations told, and be passed messages. 

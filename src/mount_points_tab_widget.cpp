@@ -86,6 +86,7 @@ void MountPointsTabWidget::set_orientation_button_clicked()
    mp_msg.request.marker_name = edited_marker.marker_name;
    geometry_msgs::Pose p;
    
+   p.orientation.w = 1;
    p.orientation.x = this->orr;
    p.orientation.y = this->orp;
    p.orientation.z = this->ory;
