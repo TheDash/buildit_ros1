@@ -41,6 +41,9 @@ void operator >> (const YAML::Node& node, BuilditConfig::MountPoints mount_point
 
       std::string key = it.first().to<std::string>();
       ROS_INFO("Key %s", key.c_str());
+      BuilditConfig::MountPoint point;
+      node[key] >> point;
+      //ROS_INFO("Value %s", it.second().to<std::string>().c_str());
      // const YAML::Node n = it->first;
      ///std::string key = it->first.as<std::string>();
       //ROS_INFO("Key %s", key.c_str());
@@ -56,21 +59,25 @@ void operator >> (const YAML::Node& node, BuilditConfig::MountPoints mount_point
 // This takes in a MountPoint type and breaks it down into individual markers.
 void operator >> (const YAML::Node& node, BuilditConfig::MountPoint& mount_point)
 {
-    int size = node.size();
-    for (int i = 0; i < size; i++)
-    {
-       BuilditConfig::MountPointMarker marker;
-       node[i] >> marker;
-    }
+   ROS_INFO("Loading mount point..");
+   YAML::Iterator it;
+   for (it = node.begin(); it != node.end(); ++it)
+   {
+      std::string key = it.first().to<std::string>();
+      ROS_INFO("Key %s", key.c_str());
+      BuilditConfig::MountPointMarker marker;
+      node[key] >> marker;
+   }
+
 }
 
 // Extract quaternion
 void operator >> (const YAML::Node& node, geometry_msgs::Quaternion& orientation)
 {
    orientation.w = 1;
-   node["x"] >> orientation.x;
-   node["y"] >> orientation.y;
-   node["z"] >> orientation.z;
+   node["r"] >> orientation.x;
+   node["p"] >> orientation.y;
+   node["y"] >> orientation.z;
 }
 
 // Extract position
@@ -84,8 +91,9 @@ void operator >> (const YAML::Node& node, geometry_msgs::Point& position)
 // Extract a marker
 void operator >> (const YAML::Node& node, BuilditConfig::MountPointMarker& marker)
 {
-    node[0] >> marker.pose.position;
-    node[1] >> marker.pose.orientation;
+    ROS_INFO("Loading position & orientation");
+    node["position"] >> marker.pose.position;
+    node["orientation"] >> marker.pose.orientation;
 }
 
 // Loads the current config loaded into the buildit_config namespace on ROSPARAM. 
