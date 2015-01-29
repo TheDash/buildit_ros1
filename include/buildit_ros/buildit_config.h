@@ -17,6 +17,7 @@ class BuilditConfig
     public:
 	struct MountPointMarker
 	{
+            std::string marker_name;
 	    geometry_msgs::Pose pose;
 	};
 	struct MountPoint 
@@ -25,7 +26,7 @@ class BuilditConfig
 	};
 	struct MountPoints
 	{
-	    std::vector<MountPoint> mount_points;
+	    std::map<std::string, MountPoint> mount_points;
 	};
 
 

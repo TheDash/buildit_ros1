@@ -27,26 +27,14 @@ BuilditConfig::BuilditConfig() :
 // It takes in a MountPoints type and breaks it down into an individual MountPoint. 
 void operator >> (const YAML::Node& node, BuilditConfig::MountPoints mount_points)
 {
-   /*int size = node.size();
-   ROS_INFO("Number of mount points in model %s", size);
-   for (int i = 0; i < size; i++)
-   {
-        //ROS_INFO("Loading mount point at %s", mount_point[i].
-        BuilditConfig::MountPoint mount_point;
-        node[i] >> mount_point;
-   }*/
-    YAML::Iterator it;
+   YAML::Iterator it;
    for (it = node.begin(); it != node.end(); ++it)
    {
-
       std::string key = it.first().to<std::string>();
-      ROS_INFO("Key %s", key.c_str());
       BuilditConfig::MountPoint point;
       node[key] >> point;
-      //ROS_INFO("Value %s", it.second().to<std::string>().c_str());
-     // const YAML::Node n = it->first;
-     ///std::string key = it->first.as<std::string>();
-      //ROS_INFO("Key %s", key.c_str());
+      mount_points.mount_points[key] = point;
+      ROS_INFO("Link %s has mount point markers.", key.c_str());
    }
 }
 
@@ -59,14 +47,15 @@ void operator >> (const YAML::Node& node, BuilditConfig::MountPoints mount_point
 // This takes in a MountPoint type and breaks it down into individual markers.
 void operator >> (const YAML::Node& node, BuilditConfig::MountPoint& mount_point)
 {
-   ROS_INFO("Loading mount point..");
    YAML::Iterator it;
    for (it = node.begin(); it != node.end(); ++it)
    {
       std::string key = it.first().to<std::string>();
-      ROS_INFO("Key %s", key.c_str());
       BuilditConfig::MountPointMarker marker;
+      marker.marker_name = key;
+      ROS_INFO("Adding mount point marker named %s", key.c_str());
       node[key] >> marker;
+      mount_point.mount_point_markers.push_back(marker);
    }
 
 }
@@ -91,7 +80,6 @@ void operator >> (const YAML::Node& node, geometry_msgs::Point& position)
 // Extract a marker
 void operator >> (const YAML::Node& node, BuilditConfig::MountPointMarker& marker)
 {
-    ROS_INFO("Loading position & orientation");
     node["position"] >> marker.pose.position;
     node["orientation"] >> marker.pose.orientation;
 }
@@ -104,8 +92,6 @@ void BuilditConfig::load(std::string name)
    YAML::Node doc;
    ROS_INFO("Loaded YAML Config file %s: ", name.c_str());
    parser.GetNextDocument(doc);	
-
-   ROS_INFO("Got document");
    //YAML::Node buildit_config;
    //dox["buildit_config"] >> doc;
    //this->name = doc["name"].as<std::string>();
@@ -129,8 +115,6 @@ void BuilditConfig::load(std::string name)
    ROS_INFO("YAML edit_orientation: %s", this->edit_orientation.c_str());
    ROS_INFO("YAML modify_model: %s", this->modify_model.c_str());
    ROS_INFO("YAML model_path: %s", this->model_path.c_str());
-
-   ROS_INFO("Loading mount point information.");
 
    doc["mount_points"] >> this->mount_points;
 }
