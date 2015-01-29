@@ -45,6 +45,7 @@ class BuilditConfig
     
       void load(std::string name);
       void save(std::string config_name);
+      void load_robot_description(std::string& filepath);
     private:
 
       std::string name;
