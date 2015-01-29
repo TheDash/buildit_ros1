@@ -39,6 +39,10 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     this->create_hide_mount_points_button();
     this->create_marker_orientation_editor();
     this->create_marker_position_editor();
+
+    // Load a default configuration to test code
+    buildit_config = new BuilditConfig();
+    buildit_config.load("/home/dash/hackweek_ws/src/buildit_ros/config/grizzly_base.yaml");
 }
 
 

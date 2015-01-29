@@ -1,10 +1,12 @@
 buildit_config:
-    name: grizzly_base
-    package: 'grizzly_description'
-    model: 'urdf/base.urdf.xacro'
-    mount_points:
-        sensor_anchor_link:
-                sensor_anchor_link_1:
+    - name: grizzly_base
+      edit_positions: false
+      edit_orientation: false
+      modify_model: false
+      model: '/home/dash/ur10urdf/base.urdf.xacro'
+      mount_points:
+        - sensor_anchor_link:
+               - sensor_anchor_link_1:
                     position:
                         x: 1.0
                         y: 1.0
@@ -13,7 +15,7 @@ buildit_config:
                         r: 0.5
                         p: 0.0
                         y: 0.0
-                sensor_anchor_link_2:
+               - sensor_anchor_link_2:
                     position:
                         x: 1.0
                         y: 1.0
@@ -22,8 +24,8 @@ buildit_config:
                         r: 0.5
                         p: 0.0
                         y: 0.0
-        front_axle_link:
-            front_axle_link_1:
+        - front_axle_link:
+             - front_axle_link_1:
                 position:
                     x: 1.0
                     y: 1.0
@@ -32,8 +34,5 @@ buildit_config:
                     r: 0.5
                     p: 0.0
                     y: 0.0
-    edit_positions: false
-    edit_orientation: false
-    modify_model: false
     
 
