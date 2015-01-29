@@ -8,6 +8,8 @@
 #include <ros/ros.h>
 #include <fstream>
 #include <iostream>
+#include <QString>
+#include <QProcess>
 
 #include <yaml-cpp/yaml.h>
 #include <yaml-cpp/iterator.h>
@@ -47,7 +49,7 @@ class BuilditConfig
     
       void load(std::string name);
       void save(std::string config_name);
-      void load_robot_description(std::string& filepath);
+      void load_robot_description(std::string& fileName);
     private:
 
       std::string name;

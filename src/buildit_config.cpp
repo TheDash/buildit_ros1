@@ -92,17 +92,6 @@ void BuilditConfig::load(std::string name)
    YAML::Node doc;
    ROS_INFO("Loaded YAML Config file %s: ", name.c_str());
    parser.GetNextDocument(doc);	
-   //YAML::Node buildit_config;
-   //dox["buildit_config"] >> doc;
-   //this->name = doc["name"].as<std::string>();
-   //this->edit_positions = doc["edit_positions"].as<std::string>();
-   //this->edit_orientation = doc["edit_orientation"].as<std::string>();
-   //this->modify_model = doc["modify_model"].as<std::string>();
-   //this->model_path = doc["model"].as<std::string>();
- 
-   //const YAML::Node& doc = dox["buildit_config"];
-   //ROS_INFO("Node type of buildit_config %s", dox.Type());
-
 
    doc["name"] >> this->name;
    doc["edit_positions"] >> this->edit_positions;
@@ -119,9 +108,45 @@ void BuilditConfig::load(std::string name)
    doc["mount_points"] >> this->mount_points;
 }
 
-void BuilditConfig::load_robot_description(std::string& filepath)
+void BuilditConfig::load_robot_description(std::string& fileName)
 {
+    QString qFileName(fileName.c_str());
     // This will load the robot description so it can be viewed.
+    if (!fileName.empty())
+      {
+        // Check if .urdf or .xacro
+        if (qFileName.endsWith(".urdf"))
+        {
+           std::ifstream ifs(fileName.c_str());
+           std::string content( (std::istreambuf_iterator<char>(ifs) ),
+                                (std::istreambuf_iterator<char>()    )  );
+
+           ros::param::set("robot_description", content);
+           ROS_INFO("Set the robot description to %s ", fileName.c_str());
+        }
+        else if (qFileName.endsWith(".xacro"))
+        {
+           // This chunk of code just gets the output of rosrun xacro xacro.py and sets it to robot_description
+           std::string cmd("rosrun xacro xacro.py ");
+           cmd += fileName;
+           QProcess process;
+           process.start(cmd.c_str());
+           process.waitForReadyRead();
+           process.waitForFinished();
+           QString output(process.readAllStandardOutput());
+           std::string robot_desc = output.toStdString();
+           ros::param::set("robot_description", robot_desc);
+           ROS_INFO("Set the robot description to %s", fileName.c_str());
+        }
+        else 
+        {
+          ROS_WARN("URDF or XACRO file not selected. Try again.");
+        }
+ 
+      } else 
+      {
+         ROS_WARN("Something is wrong with the file name. Please file a bug report with what file you used.");
+      } 
 }
 
 void BuilditConfig::save(std::string name)
