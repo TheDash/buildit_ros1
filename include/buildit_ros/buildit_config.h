@@ -10,7 +10,6 @@
 class BuilditConfig 
 {
 
-
 	struct MountPointMarker
 	{
 	    geometry_msgs::Pose pose;

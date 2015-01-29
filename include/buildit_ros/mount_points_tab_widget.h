@@ -75,7 +75,7 @@ Q_OBJECT
         QPushButton * create_mount_points_button;
         QPushButton * hide_mount_points_button;  
 
-        BuilditConfig::BuilditConfig * buildit_config;
+        BuilditConfig * buildit_config;
 
         QTableWidget * links_table;
         QTableWidget * selected_links_table;

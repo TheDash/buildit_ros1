@@ -33,6 +33,7 @@ qt4_wrap_cpp(MOC_FILES
     include/${PROJECT_NAME}/add_sensors_tab_widget.h
     include/${PROJECT_NAME}/mount_points_tab_widget.h
     include/${PROJECT_NAME}/export_robot_tab_widget.h
+    include/${PROJECT_NAME}/buildit_config.h
 )
 
 set(SOURCE_FILES
@@ -43,6 +44,7 @@ set(SOURCE_FILES
     src/add_sensors_tab_widget.cpp
     src/mount_points_tab_widget.cpp
     src/export_robot_tab_widget.cpp
+    src/buildit_config.cpp
     ${MOC_FILES}
 )
 
