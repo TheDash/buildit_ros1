@@ -108,7 +108,7 @@ void BuilditConfig::load(std::string name)
    doc["mount_points"] >> this->mount_points;
 }
 
-void BuilditConfig::load_robot_description(std::string& fileName)
+void BuilditConfig::load_robot_description(std::string fileName)
 {
     QString qFileName(fileName.c_str());
     // This will load the robot description so it can be viewed.

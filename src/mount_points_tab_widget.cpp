@@ -42,8 +42,8 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
 
     // Load a default configuration to test code
     this->buildit_config = new BuilditConfig();
-    buildit_config->load("/home/dash/hackweek_ws/src/buildit_ros/config/grizzly_base.yaml");
-    ROS_INFO("Loading Config..");
+    //buildit_config->load("/home/dash/hackweek_ws/src/buildit_ros/config/grizzly_base.yaml");
+    //buildit_config->load_robot_description(buildit_config->model_path);
 }
 
 
@@ -344,6 +344,13 @@ void MountPointsTabWidget::load_urdf_base_button_clicked()
            ros::param::set("robot_description", robot_desc);
            ROS_INFO("Set the robot description to %s", fileName.c_str());
         }
+        else if (qFileName.endsWith(".yaml"))
+        {
+           buildit_config->load(fileName);
+           ROS_INFO("Loading config %s", fileName.c_str());
+           buildit_config->load_robot_description(buildit_config->getModelPath());
+           ROS_INFO("Loading model %s", buildit_config->getModelPath().c_str());
+        }
         else 
         {
           ROS_WARN("URDF or XACRO file not selected. Try again.");
@@ -393,7 +400,7 @@ void MountPointsTabWidget::load_urdf_base_button_clicked()
 
 void MountPointsTabWidget::create_load_base_urdf_button()
 {
-    load_urdf_base_button = new QPushButton(QString(QString::fromStdString("Load URDF Base")), this);
+    load_urdf_base_button = new QPushButton(QString(QString::fromStdString("Load Model")), this);
     load_urdf_base_button->setGeometry(QRect(700, 35, 120, 50));
     load_urdf_base_button->setVisible(true);
 
