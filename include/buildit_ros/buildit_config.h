@@ -6,12 +6,14 @@
 #include <geometry_msgs/Pose.h>
 #include <vector>
 #include <ros/ros.h>
+#include <fstream>
+#include <iostream>
 
 #include <yaml-cpp/yaml.h>
 
 class BuilditConfig 
 {
-
+    public:
 	struct MountPointMarker
 	{
 	    geometry_msgs::Pose pose;
@@ -39,7 +41,7 @@ class BuilditConfig
       //inline std::map<std::string, std::vector<geometry_msgs::Pose> > getMountPoints() { return mount_points; }
       inline bool canEditPositions() { return edit_positions == "true" ? true : false; }
       inline bool canEditOrientation() { return edit_orientation == "true" ? true : false; }
-      inline bool canEditModel() { return edit_model == "true" ? true : false; }
+      inline bool canEditModel() { return modify_model == "true" ? true : false; }
     
       void load(std::string name);
       void save(std::string config_name);
@@ -53,7 +55,7 @@ class BuilditConfig
       std::vector<MountPointMarker> mount_point_markers;
       std::string edit_positions;
       std::string edit_orientation;
-      std::string edit_model;
+      std::string modify_model;
 
       // Loads the current buildit_config/ namespace on the ROS Param server and sets it to be this object.
 

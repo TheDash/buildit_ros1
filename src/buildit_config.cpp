@@ -7,7 +7,7 @@ BuilditConfig::~BuilditConfig()
 
 BuilditConfig::BuilditConfig() : 
     edit_positions("true"), 
-    edit_model("true"),
+    modify_model("true"),
     edit_orientation("true")
 {
 
@@ -42,7 +42,6 @@ void operator >> (const YAML::Node& node, BuilditConfig::MountPoint mount_point)
     for (int i = 0; i < size; i++)
     {
        BuilditConfig::MountPointMarker marker;
-       this->mount_point_markers.push_back(marker);
        node[i] >> marker;
     }
 }
@@ -50,18 +49,18 @@ void operator >> (const YAML::Node& node, BuilditConfig::MountPoint mount_point)
 // Extract quaternion
 void operator >> (const YAML::Node& node, geometry_msgs::Quaternion orientation)
 {
-   1 >> orientation.w;
-   node[0] >> orientation.x;
-   node[1] >> orientation.y;
-   node[2] >> orientation.z;
+   orientation.w = 1;
+   node["x"] >> orientation.x;
+   node["y"] >> orientation.y;
+   node["z"] >> orientation.z;
 }
 
 // Extract position
 void operator >> (const YAML::Node& node, geometry_msgs::Point& position)
 {
-   node[0] >> position.x;
-   node[1] >> position.y;
-   node[2] >> position.z;
+   node["x"] >> position.x;
+   node["y"] >> position.y;
+   node["z"] >> position.z;
 }
 
 // Extract a marker
@@ -74,19 +73,19 @@ void operator >> (const YAML::Node& node, BuilditConfig::MountPointMarker& marke
 // Loads the current config loaded into the buildit_config namespace on ROSPARAM. 
 void BuilditConfig::load(std::string name)
 {
-   std::ifstream fin(name);
+   std::ifstream fin(name.c_str());
    YAML::Parser parser(fin);
    YAML::Node doc;
    ROS_INFO("Loaded YAML Config file %s: ", name.c_str());
    parser.GetNextDocument(doc);
 
    YAML::Node buildit_config;
-   buildit_config = doc["buildit_config"];
-   this->name = buildit_config["name"];
-   this->edit_positions = buildit_config["edit_positions"];
-   this->modify_model = buildit_config["modify_model"];
-   this->edit_orientation = buildit_config["edit_orientation"];
-   this->model_path = buildit_config["model"];   
+   doc["buildit_config"] >> buildit_config;
+   buildit_config["name"] >> this->name;
+   buildit_config["edit_positions"] >> this->edit_positions;
+   buildit_config["edit_orientation"] >> this->edit_orientation;
+   buildit_config["modify_model"] >> this->modify_model;
+   buildit_config["model"] >> this->model_path; 
 
    ROS_INFO("YAML name: %s", this->name.c_str());
    ROS_INFO("YAML edit_positions: %s", this->edit_positions.c_str());
