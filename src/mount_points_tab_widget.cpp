@@ -43,6 +43,7 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     // Load a default configuration to test code
     this->buildit_config = new BuilditConfig();
     buildit_config->load("/home/dash/hackweek_ws/src/buildit_ros/config/grizzly_base.yaml");
+    ROS_INFO("Loading Config..");
 }
 
 

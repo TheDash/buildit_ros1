@@ -1,6 +1,6 @@
 #include <buildit_ros/buildit_config.h>
 
-void operator >> (const YAML::Node& node, BuilditConfig::MountPoints mount_points);
+void operator >> (const YAML::Node& node, BuilditConfig::MountPoints mount_points);	
 void operator >> (const YAML::Node& node, BuilditConfig::MountPoint& mount_point);
 void operator >> (const YAML::Node& node, geometry_msgs::Quaternion& orientation);
 void operator >> (const YAML::Node& node, geometry_msgs::Point& position);
@@ -27,11 +27,23 @@ BuilditConfig::BuilditConfig() :
 // It takes in a MountPoints type and breaks it down into an individual MountPoint. 
 void operator >> (const YAML::Node& node, BuilditConfig::MountPoints mount_points)
 {
-   int size = node.size();
+   /*int size = node.size();
+   ROS_INFO("Number of mount points in model %s", size);
    for (int i = 0; i < size; i++)
    {
+        //ROS_INFO("Loading mount point at %s", mount_point[i].
         BuilditConfig::MountPoint mount_point;
         node[i] >> mount_point;
+   }*/
+    YAML::Iterator it;
+   for (it = node.begin(); it != node.end(); ++it)
+   {
+
+      std::string key = it.first().to<std::string>();
+      ROS_INFO("Key %s", key.c_str());
+     // const YAML::Node n = it->first;
+     ///std::string key = it->first.as<std::string>();
+      //ROS_INFO("Key %s", key.c_str());
    }
 }
 
@@ -79,19 +91,30 @@ void operator >> (const YAML::Node& node, BuilditConfig::MountPointMarker& marke
 // Loads the current config loaded into the buildit_config namespace on ROSPARAM. 
 void BuilditConfig::load(std::string name)
 {
-   /*std::ifstream fin(name.c_str());
+   std::ifstream fin(name.c_str());
    YAML::Parser parser(fin);
    YAML::Node doc;
    ROS_INFO("Loaded YAML Config file %s: ", name.c_str());
-   parser.GetNextDocument(doc);
+   parser.GetNextDocument(doc);	
 
+   ROS_INFO("Got document");
    //YAML::Node buildit_config;
-   //doc["buildit_config"] >> buildit_config;
-   this->name = doc["name"].as<std::string>();
-   this->edit_positions = doc["edit_positions"].as<std::string>();
-   this->edit_orientation = doc["edit_orientation"].as<std::string>();
-   this->modify_model = doc["modify_model"].as<std::string>();
-   this->model_path = doc["model"].as<std::string>();
+   //dox["buildit_config"] >> doc;
+   //this->name = doc["name"].as<std::string>();
+   //this->edit_positions = doc["edit_positions"].as<std::string>();
+   //this->edit_orientation = doc["edit_orientation"].as<std::string>();
+   //this->modify_model = doc["modify_model"].as<std::string>();
+   //this->model_path = doc["model"].as<std::string>();
+ 
+   //const YAML::Node& doc = dox["buildit_config"];
+   //ROS_INFO("Node type of buildit_config %s", dox.Type());
+
+
+   doc["name"] >> this->name;
+   doc["edit_positions"] >> this->edit_positions;
+   doc["edit_orientation"] >> this->edit_orientation;
+   doc["modify_model"] >> this->modify_model;
+   doc["model"] >> this->model_path;
 
    ROS_INFO("YAML name: %s", this->name.c_str());
    ROS_INFO("YAML edit_positions: %s", this->edit_positions.c_str());
@@ -101,7 +124,7 @@ void BuilditConfig::load(std::string name)
 
    ROS_INFO("Loading mount point information.");
 
-   doc["mount_points"] >> this->mount_points;*/
+   doc["mount_points"] >> this->mount_points;
 }
 
 void BuilditConfig::load_robot_description(std::string& filepath)

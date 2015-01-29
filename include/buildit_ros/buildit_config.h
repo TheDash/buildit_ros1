@@ -10,6 +10,7 @@
 #include <iostream>
 
 #include <yaml-cpp/yaml.h>
+#include <yaml-cpp/iterator.h>
 
 class BuilditConfig 
 {
