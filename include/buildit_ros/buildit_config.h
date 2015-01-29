@@ -7,6 +7,8 @@
 #include <vector>
 #include <ros/ros.h>
 
+#include <yaml-cpp/yaml.h>
+
 class BuilditConfig 
 {
 

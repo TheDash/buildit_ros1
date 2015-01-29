@@ -6,9 +6,9 @@ BuilditConfig::~BuilditConfig()
 }
 
 BuilditConfig::BuilditConfig() : 
-    edit_positions(true), 
-    edit_model(true),
-    edit_orientation(true)
+    edit_positions("true"), 
+    edit_model("true"),
+    edit_orientation("true")
 {
 
 }
