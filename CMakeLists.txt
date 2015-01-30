@@ -17,7 +17,6 @@ catkin_package(
 )
 
 
-
 include_directories(${catkin_INCLUDE_DIRS} include)
 link_directories(${catkin_LIBRARY_DIRS})
 
@@ -48,8 +47,11 @@ set(SOURCE_FILES
     ${MOC_FILES}
 )
 
-add_executable(interactive_mount_points_server src/interactive_mount_points_server.cpp)
-target_link_libraries(interactive_mount_points_server ${catkin_LIBRARIES} ${QT_LIBRARIES})
+add_library(buildit_config src/buildit_config.cpp)
+target_link_libraries(buildit_config ${catkin_LIBRARIES} yaml-cpp ${QT_LIBRARIES})
+
+add_executable(interactive_mount_points_server src/interactive_mount_points_server.cpp )
+target_link_libraries(interactive_mount_points_server ${catkin_LIBRARIES} ${QT_LIBRARIES} buildit_config yaml-cpp)
 add_dependencies(interactive_mount_points_server interactive_mount_points_server_gencpp ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})

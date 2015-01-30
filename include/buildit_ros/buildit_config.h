@@ -13,6 +13,7 @@
 
 #include <yaml-cpp/yaml.h>
 #include <yaml-cpp/iterator.h>
+#include <yaml-cpp/node.h>
 
 class MountPointMarker
 {
@@ -21,6 +22,7 @@ class MountPointMarker
        ~MountPointMarker();
        std::string marker_name;
        geometry_msgs::Pose pose;
+       static int number_of_markers;
 };
 
 class MountPoint

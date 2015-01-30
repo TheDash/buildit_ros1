@@ -21,6 +21,9 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+
+#include <buildit_ros/buildit_config.h>
+
 // GLOBAL VARS
 #define ATTACH_MENU_ID 1
 #define UNATTACH_MENU_ID 2
@@ -62,6 +65,10 @@ bool update_mount_point_marker(buildit_ros::UpdateInteractiveMountPoint::Request
 bool clear_all_markers(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res);
 
 std::map<std::string, geometry_msgs::Vector3> parent_positions;
+std::map<std::string, MountPointMarker> mount_point_markers;
+
+int MountPointMarker::number_of_markers = 0;
+
 // BEGIN FUNCTION DEFINITIONS 
 InteractiveMarkerControl& makeBoxControl( InteractiveMarker &msg )
 {
@@ -494,6 +501,24 @@ std::map<std::string, int> marker_counts;
 // The server will have to spawn markers at the locations told, and be passed messages. 
 bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
 {
+
+   // Create a mount point marker object.
+   MountPointMarker marker;
+   marker.marker_name = req.link_name;
+   marker.number_of_markers++;
+
+   geometry_msgs::Point p;
+   p.x = req.parent_position.x;
+   p.y = req.parent_position.y;
+   p.z = req.parent_position.z;
+
+   geometry_msgs::Pose pose; 
+   pose.position = p;
+
+   marker.pose = pose;
+
+   mount_point_markers.insert( std::pair<std::string, MountPointMarker>(marker.marker_name, marker) );
+
    std::string name = req.link_name;
    std::string parent_name = req.parent_name;
 
@@ -506,7 +531,14 @@ bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, 
           marker_counts.insert(std::pair<std::string, int> (name, 1));
           std::stringstream convert;
           convert << marker_counts[name];
-          name.append("_").append(convert.str());
+          //if (marker_counts[name] == 1)
+          //{
+              //name.append(convert.str());
+              //name.append("_").append(convert.str());
+          //} else if (marker_counts[name] > 1)
+          //{
+          //    
+          //}
           marker_counts[name]++;
        }
    }
