@@ -76,8 +76,11 @@ void operator >> (const YAML::Node& node, MountPoints& mount_points)
       MountPoint point;
       node[key] >> point;
       mount_points.mount_points.insert( std::pair<std::string, MountPoint>(key, point) );
-      ROS_INFO("Link %s has mount point markers.", key.c_str());
+      ROS_INFO("GUNNA FAIL MY NUGUH?");
+      ROS_INFO("Inserted KEY: %s with %u mount points", key.c_str(), point.mount_point_markers.size());
    }
+   ROS_INFO("MOUNT LOCATIONS #%u", mount_points.mount_points.size());
+   
 }
 
 // This parses the mount point node. It looks for all of the markers inside that mount point. E.g
@@ -98,31 +101,45 @@ void operator >> (const YAML::Node& node, MountPoint& mount_point)
       ROS_INFO("Adding mount point marker named %s", key.c_str());
       node[key] >> marker;
       mount_point.mount_point_markers.push_back(marker);
+      ROS_INFO("Marker address? %u", &marker);
+      ROS_INFO("Added marker %s", marker.marker_name.c_str());
+      ROS_INFO("size? %u", mount_point.mount_point_markers.size());
    }
+   ROS_INFO("GUNNA FAIL?");
+   ROS_INFO("Number of MOUNT POINT MARKERS %i", mount_point.mount_point_markers.size());
 
 }
 
 // Extract quaternion
 void operator >> (const YAML::Node& node, geometry_msgs::Quaternion& orientation)
 {
-   orientation.w = 1;
-   node["r"] >> orientation.x;
-   node["p"] >> orientation.y;
-   node["y"] >> orientation.z;
+   orientation.w = 1.0;
+   //node["r"] >> orientation.x;
+   //node["p"] >> orientation.y;
+   //node["y"] >> orientation.z;
+   orientation.x = node["r"].to<float>();
+   orientation.y = node["p"].to<float>();
+   orientation.z = node["y"].to<float>();
 }
 
 // Extract position
 void operator >> (const YAML::Node& node, geometry_msgs::Point& position)
 {
-   node["x"] >> position.x;
-   node["y"] >> position.y;
-   node["z"] >> position.z;
+   ROS_INFO("GUNNA FAIL WTF LOL");
+   position.x = node["x"].to<float>();
+   ROS_INFO("X VALUE %f", position.x);
+   position.y = node["y"].to<float>();
+   position.z = node["z"].to<float>();
+   //node["x"] >> position.x;
+   //node["y"] >> position.y;
+   //node["z"] >> position.z;
 }
 
 // Extract a marker
 void operator >> (const YAML::Node& node, MountPointMarker& marker)
 {
     node["position"] >> marker.pose.position;
+    ROS_INFO("Marker position X %f", marker.pose.position.x);
     node["orientation"] >> marker.pose.orientation;
 }
 
@@ -148,9 +165,11 @@ void BuilditConfig::load(std::string name)
    ROS_INFO("YAML model_path: %s", this->model_path.c_str());
 
    doc["mount_points"] >> this->mount_points;
+   ROS_INFO("MOUNT LOCATOINS %u", this->mount_points.mount_points.size());
+   //if (this->mount_points.mount_points.empty()) { ROS_INFO("EMPTY FUKEN MAP"); };
 }
 
-void BuilditConfig::load_robot_description(std::string fileName)
+void BuilditConfig::load_robot_description(std::string& fileName)
 {
     QString qFileName(fileName.c_str());
     // This will load the robot description so it can be viewed.

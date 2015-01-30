@@ -328,6 +328,8 @@ void MountPointsTabWidget::populate_links_table_after_button()
 
 void MountPointsTabWidget::create_mount_point_markers()
 {
+
+     ROS_INFO("Doc name %s", this->buildit_config->getName().c_str());
      MountPoints mount_points = this->buildit_config->getMountPoints();
      ROS_INFO("BuilditConfig::MountPoints mount_points = this->buildit_config->getMountPoints();");
 
@@ -394,7 +396,8 @@ void MountPointsTabWidget::load_urdf_base_button_clicked()
         else if (qFileName.endsWith(".yaml"))
         {
            buildit_config->load(fileName);
-           ROS_INFO("Loading config %s", fileName.c_str());
+           ROS_INFO("# of MOUNT FUKEN PTSSS %u", buildit_config->mount_points.mount_points.size());
+           ROS_INFO("# of MOUNT FKN PTS %u", buildit_config->getMountPoints().mount_points.size());
            buildit_config->load_robot_description(buildit_config->getModelPath());
            ROS_INFO("Loading model %s", buildit_config->getModelPath().c_str());
 

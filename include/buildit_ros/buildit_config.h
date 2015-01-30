@@ -53,6 +53,7 @@ class BuilditConfig
       inline bool canEditPositions() { return edit_positions == "true" ? true : false; }
       inline bool canEditOrientation() { return edit_orientation == "true" ? true : false; }
       inline bool canEditModel() { return modify_model == "true" ? true : false; }
+      MountPoints mount_points;
 
       inline MountPoints getMountPoints() { return mount_points; }
       //inline std::map<std::string, std::vector<geometry_msgs::Pose> > getMountPoints() { return mount_points; }
@@ -66,7 +67,6 @@ class BuilditConfig
       std::string model_path;
       // A map of links that have mount points, and where those mount points are positioned.
       //MountPointsMap mount_points;
-      MountPoints mount_points;
       std::vector<MountPointMarker> mount_point_markers;
       std::string edit_positions;
       std::string edit_orientation;
