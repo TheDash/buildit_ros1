@@ -169,8 +169,9 @@ void BuilditConfig::load(std::string name)
    //if (this->mount_points.mount_points.empty()) { ROS_INFO("EMPTY FUKEN MAP"); };
 }
 
-void BuilditConfig::load_robot_description(std::string& fileName)
+void BuilditConfig::load_robot_description()
 {
+    std::string fileName(this->model_path);
     QString qFileName(fileName.c_str());
     // This will load the robot description so it can be viewed.
     if (!fileName.empty())
