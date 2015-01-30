@@ -265,7 +265,7 @@ void MountPointsTabWidget::create_mount_point_marker(std::string link_name, geom
          }
          else
          {
-            ROS_INFO("Failed to send markers to server");
+            ROS_INFO("Failed to send markers to server (Marker name: %s)", link_name.c_str());
          }
 }
 
@@ -409,12 +409,8 @@ void MountPointsTabWidget::load_urdf_base_button_clicked()
         else if (qFileName.endsWith(".yaml"))
         {
            buildit_config->load(fileName);
-           ROS_INFO("# of MOUNT FUKEN PTSSS %u", buildit_config->mount_points.mount_points.size());
-           ROS_INFO("# of MOUNT FKN PTS %u", buildit_config->getMountPoints().mount_points.size());
            buildit_config->load_robot_description();
            ROS_INFO("Loading model %s", buildit_config->getModelPath().c_str());
-           ROS_INFO("# of MOUNT FUKEN PTSSS %u", buildit_config->mount_points.mount_points.size());
-           ROS_INFO("# of MOUNT FKN PTS %u", buildit_config->getMountPoints().mount_points.size());
            // Spawn markers
            this->clear_marker_server();
            this->create_mount_point_markers();

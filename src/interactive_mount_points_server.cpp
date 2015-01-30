@@ -461,15 +461,96 @@ bool clear_all_markers(buildit_ros::InteractiveMountPoint::Request &req, buildit
     return true;
 }
 
+int count_total_markers(std::string name)
+{
+         // actual name of the marker being checked
+         std::string actual_name;
+         std::string delimiter("_");
+         actual_name = name.substr(0, name.find(delimiter));
+
+    int total = 0;
+    for (int i = 0; i < marker_list.size(); i++)
+    {
+         // get the actual name of existing marker
+         std::string existing_actual_name;
+         std::string current_marker = marker_list.at(i);
+         existing_actual_name = current_marker.substr(0, current_marker.find(delimiter));
+         // get all the substring delimited and count them
+         if (actual_name.compare(existing_actual_name) == 0)
+         {
+              total++;
+         }
+    }
+   ROS_INFO("Mount link %s now has %i markers", name.c_str(), total);
+   return total;
+}
+
 // The server will have to spawn markers at the locations told, and be passed messages. 
 bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
 {
    std::string name = req.link_name;
    std::string parent_name = req.parent_name;
 
-   marker_list.push_back(name);
    ROS_INFO("Marker count %d", marker_list.size());
-   if (std::find(marker_list.begin(), marker_list.end(), name.c_str()) != marker_list.end())
+   for (int i = 0; i < marker_list.size(); i++)
+   {
+       if (marker_list.at(i) == name.c_str())
+       {
+          int nummarkers = count_total_markers(name);
+          name.append("_").append(nummarkers+"");
+       }
+   }
+   marker_list.push_back(name);
+
+
+
+   //visualization_msgs::InteractiveMarker m;
+   /*if (server->get(name, m))
+   {
+     std::string markercount;
+     std::string delimiter("_");
+     markercount = name.substr(name.find(delimiter), name.size());
+     int count = std::stoi(markercount);
+     if (markercount == 1)
+     {
+         
+     }
+      // This means there's a marker already with the same name. But when adding the markers, shouldn't just keep a count of how many time that marker is in the server? 
+// Marker names:
+// sensor_link_1
+// sensor_link_2
+// sensor_link_3
+// 
+// From fresh:
+// should add a marker named {link_name}_1
+// and if {link_name}_X exists, create {link_name}_x+1
+   }*/
+
+
+  /* int total = 0;
+   bool contains = false;
+   std::string actual_name;
+   for (int i = 0; i < marker_list.size(); i++) 
+   {
+       std::string marker_name = marker_list.at(i);
+       std::string delimiter = "_";
+       actual_name = marker_name.substr(0, marker_name.find(delimiter));
+       if (actual_name.c_str() == name.c_str())
+       {
+          contains = true;
+          total++;
+       }
+   }
+
+   if (!contains)
+   {
+     marker_list.push_back(actual_name);
+   } else
+   {
+     marker_list.push_back(actual_name.append("_").append(total + ""));
+   }*/
+   
+   /*if (std::find(marker_list.begin(), marker_list.end(), name.c_str()) != marker_list.end())
    {
       int total = 0;
       // count how many times its in there.
@@ -485,7 +566,7 @@ bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, 
        std::string num = static_cast<std::ostringstream*>( &(std::ostringstream() << total) )->str();
        name.append("_").append(num);
       }
-   }
+   }*/
    // The position of the parent link should be passed in as a parameter.
    float x;
    float y;
