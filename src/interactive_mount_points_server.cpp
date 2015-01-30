@@ -70,8 +70,12 @@ bool update_mount_point_marker(buildit_ros::UpdateInteractiveMountPoint::Request
 
 bool clear_all_markers(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res);
 
+
+bool load_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res);
+
 std::map<std::string, geometry_msgs::Vector3> parent_positions;
-std::map<std::string, MountPointMarker> mount_point_markers;
+std::multimap<std::string, MountPointMarker> mount_point_markers;
+std::vector<std::string> marker_names;
 
 int MountPointMarker::number_of_markers = 0;
 
@@ -471,19 +475,20 @@ bool update_mount_point_marker(buildit_ros::UpdateInteractiveMountPoint::Request
 
 bool clear_all_markers(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
 {
+    marker_names.clear();
+    MountPointMarker::number_of_markers = 0;
+    mount_point_markers.clear();
     server->clear();
     server->applyChanges();
     return true;
 }
 
-std::map<std::string, int> marker_counts;
-// The server will have to spawn markers at the locations told, and be passed messages. 
-bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
+bool load_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
 {
 
-   // Create a mount point marker object.
    MountPointMarker marker;
    marker.marker_name = req.link_name;
+   ROS_INFO("Loading marker %s from YAML file", marker.marker_name.c_str());
    marker.number_of_markers++;
 
    geometry_msgs::Point p;
@@ -495,9 +500,71 @@ bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, 
    pose.position = p;
 
    marker.pose = pose;
-   marker.marker_name.append("_").append(SSTR(marker.number_of_markers));
+   marker.marker_id = 0;
 
-   mount_point_markers.insert( std::pair<std::string, MountPointMarker>(marker.marker_name, marker) );
+   marker_names.push_back(marker.link_name);
+
+    // Create 6dof marker with that link name. 
+   tf::Vector3 position = tf::Vector3( marker.pose.position.x, marker.pose.position.y , marker.pose.position.z);
+  
+   make6DofMarkerWithName( marker.marker_name, marker.link_name, false, visualization_msgs::InteractiveMarkerControl::MOVE_ROTATE_3D, position, true );
+   res.spawned = true;
+   server->applyChanges();
+
+   return true;
+}
+
+
+std::map<std::string, int> marker_counts;
+// The server will have to spawn markers at the locations told, and be passed messages. 
+bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
+{
+
+   // Create a mount point marker object.
+   MountPointMarker marker;
+   marker.marker_name = req.link_name;
+   marker.link_name = req.link_name;
+   marker.number_of_markers++;
+
+   geometry_msgs::Point p;
+   p.x = req.parent_position.x;
+   p.y = req.parent_position.y;
+   p.z = req.parent_position.z;
+
+   geometry_msgs::Pose pose; 
+   pose.position = p;
+
+   marker.pose = pose;
+   marker.marker_id = 0;
+
+   int total = 0;
+   for (int i = 0; i < marker_names.size(); i++)
+   {
+        if (marker_names.at(i) == marker.link_name) 
+        {
+             total++;
+        } 
+   }
+   marker_names.push_back(marker.link_name);
+   
+   //int count = mount_point_markers.count(marker.link_name);
+   // Only need to append things if they have the same name.
+   if (total)
+   {
+       // Append not the number of markers, but the number of count that is in there.
+       marker.marker_id = total;
+       ROS_INFO("Marker id %u", marker.marker_id);
+   mount_point_markers.insert( std::pair<std::string, MountPointMarker>(marker.link_name, marker) );
+       marker.marker_name.append("_").append(SSTR(total));
+       ROS_INFO("Marker count %u", total);
+
+   } else
+   {
+         mount_point_markers.insert( std::pair<std::string, MountPointMarker>(marker.link_name, marker) );
+   }
+   ROS_INFO("Marker id %u", marker.marker_id);
+   ROS_INFO("Marker name %s", marker.marker_name.c_str());
+   ROS_INFO("Marker link_name %s", marker.link_name.c_str());
    
    // The position of the parent link should be passed in as a parameter.
    float x;
@@ -547,6 +614,9 @@ int main(int argc, char** argv)
 
     ros::ServiceServer clear_markers_service = n.advertiseService("clear_all_markers", clear_all_markers);
    ROS_INFO("Ready to remove mount points");
+
+  ros::ServiceServer load_markers_service = n.advertiseService("load_mount_point_marker", load_mount_point_marker);
+   ROS_INFO("Ready to load mount points");
 
    server->applyChanges();
 
