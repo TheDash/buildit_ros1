@@ -56,6 +56,9 @@ void set_marker_orientation(const InteractiveMarkerFeedbackConstPtr & feedback);
 void set_marker_position(const InteractiveMarkerFeedbackConstPtr & feedback);
 
 bool update_mount_point_marker(buildit_ros::UpdateInteractiveMountPoint::Request &req, buildit_ros::UpdateInteractiveMountPoint::Response &res);
+
+bool clear_all_markers(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res);
+
 std::map<std::string, geometry_msgs::Vector3> parent_positions;
 // BEGIN FUNCTION DEFINITIONS 
 InteractiveMarkerControl& makeBoxControl( InteractiveMarker &msg )
@@ -451,6 +454,13 @@ bool update_mount_point_marker(buildit_ros::UpdateInteractiveMountPoint::Request
    return true;
 }
 
+bool clear_all_markers(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
+{
+    server->clear();
+    server->applyChanges();
+    return true;
+}
+
 // The server will have to spawn markers at the locations told, and be passed messages. 
 bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
 {
@@ -470,8 +480,11 @@ bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, 
                 total++;
          }
       }
+      if (total > 0)
+      {
        std::string num = static_cast<std::ostringstream*>( &(std::ostringstream() << total) )->str();
        name.append("_").append(num);
+      }
    }
    // The position of the parent link should be passed in as a parameter.
    float x;
@@ -492,8 +505,6 @@ bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, 
 
    return true;
 }
-
-
 
 
 // Start interactive marker server 
@@ -519,8 +530,11 @@ int main(int argc, char** argv)
    ros::ServiceServer service = n.advertiseService("spawn_mount_point_marker", spawn_mount_point_marker);
    ROS_INFO("Ready to spawn mount points");
 
-   ros::ServiceServer remove_service = n.advertiseService("update_mount_point_marker", update_mount_point_marker);
+   ros::ServiceServer update_service = n.advertiseService("update_mount_point_marker", update_mount_point_marker);
    ROS_INFO("Ready to update mount points");
+
+    ros::ServiceServer clear_markers_service = n.advertiseService("clear_all_markers", clear_all_markers);
+   ROS_INFO("Ready to remove mount points");
 
    server->applyChanges();
 

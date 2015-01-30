@@ -23,6 +23,7 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
 
     // Advertise unattach service 
 
+    this->clear_marker_server();
     this->load_robot_links();
     this->create_load_base_urdf_button();
     this->create_create_mount_points_button();
@@ -46,6 +47,23 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
 MountPointsTabWidget::~MountPointsTabWidget()
 {
 
+}
+
+void MountPointsTabWidget::clear_marker_server()
+{
+   ROS_INFO("Clearing marker server");
+    ros::ServiceClient clear_markers = this->nh.serviceClient<buildit_ros::InteractiveMountPoint>("clear_all_markers");
+   buildit_ros::InteractiveMountPoint mp_msg;
+
+   if (clear_markers.call(mp_msg))
+   {
+      ROS_INFO("Markers erased from server");
+   } 
+   else 
+   {
+      ROS_INFO("Failed to erase markers on server.");
+   }
+   
 }
 
 void MountPointsTabWidget::set_position_button_clicked()
@@ -398,6 +416,7 @@ void MountPointsTabWidget::load_urdf_base_button_clicked()
            ROS_INFO("# of MOUNT FUKEN PTSSS %u", buildit_config->mount_points.mount_points.size());
            ROS_INFO("# of MOUNT FKN PTS %u", buildit_config->getMountPoints().mount_points.size());
            // Spawn markers
+           this->clear_marker_server();
            this->create_mount_point_markers();
         }
         else 
