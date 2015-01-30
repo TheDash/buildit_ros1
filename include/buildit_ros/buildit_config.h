@@ -14,24 +14,34 @@
 #include <yaml-cpp/yaml.h>
 #include <yaml-cpp/iterator.h>
 
-class BuilditConfig 
+class MountPointMarker
+{
+   public:
+       MountPointMarker();
+       ~MountPointMarker();
+       std::string marker_name;
+       geometry_msgs::Pose pose;
+};
+
+class MountPoint
+{
+   public:
+       MountPoint();
+       ~MountPoint();
+       std::vector<MountPointMarker> mount_point_markers;
+};
+
+class MountPoints
 {
     public:
-	struct MountPointMarker
-	{
-            std::string marker_name;
-	    geometry_msgs::Pose pose;
-	};
-	struct MountPoint 
-	{
-	    std::vector<MountPointMarker> mount_point_markers;    
-	};
-	struct MountPoints
-	{
-	    std::map<std::string, MountPoint> mount_points;
-	};
+        MountPoints();
+        ~MountPoints();
+        std::map<std::string, MountPoint> mount_points;
+};
 
 
+class BuilditConfig 
+{
     public:
       BuilditConfig();
      ~BuilditConfig();
@@ -40,12 +50,12 @@ class BuilditConfig
       //typedef std::map<std::string, geometry_msgs::Pose> MountPointsMap;
       inline std::string getName() { return name; }
       inline std::string getModelPath() { return model_path; }
-
-      inline MountPoints getMountPoints() { return mount_points; }
-      //inline std::map<std::string, std::vector<geometry_msgs::Pose> > getMountPoints() { return mount_points; }
       inline bool canEditPositions() { return edit_positions == "true" ? true : false; }
       inline bool canEditOrientation() { return edit_orientation == "true" ? true : false; }
       inline bool canEditModel() { return modify_model == "true" ? true : false; }
+
+      inline MountPoints getMountPoints() { return mount_points; }
+      //inline std::map<std::string, std::vector<geometry_msgs::Pose> > getMountPoints() { return mount_points; }
     
       void load(std::string name);
       void save(std::string config_name);
@@ -61,11 +71,6 @@ class BuilditConfig
       std::string edit_positions;
       std::string edit_orientation;
       std::string modify_model;
-
-      // Loads the current buildit_config/ namespace on the ROS Param server and sets it to be this object.
-
-      // Saves the current buildit_config/ and exports it to a .yaml file. 
-
 };
 
 #endif

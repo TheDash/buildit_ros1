@@ -328,19 +328,26 @@ void MountPointsTabWidget::populate_links_table_after_button()
 
 void MountPointsTabWidget::create_mount_point_markers()
 {
-     BuilditConfig::MountPoints mount_points = this->buildit_config->getMountPoints();
-     std::map<std::string, BuilditConfig::MountPoint> point_map = mount_points.mount_points;
+     MountPoints mount_points = this->buildit_config->getMountPoints();
+     ROS_INFO("BuilditConfig::MountPoints mount_points = this->buildit_config->getMountPoints();");
+
+     std::map<std::string, MountPoint> point_map = mount_points.mount_points;
+     ROS_INFO("std::map<std::string, BuilditConfig::MountPoint> point_map = mount_points.mount_points;");
+     if (mount_points.mount_points.empty())
+     {
+        ROS_INFO("EMPTY MAP");
+     }
 
      ROS_INFO("# OF MOUNT LOCATIONS: %s", mount_points.mount_points.size());
-
-     typedef std::map<std::string, BuilditConfig::MountPoint>::iterator it_type;
+     
+     typedef std::map<std::string, MountPoint>::iterator it_type;
      for (it_type iterator = point_map.begin(); iterator != point_map.end(); iterator++)
      { 
           geometry_msgs::Pose pose;
-          BuilditConfig::MountPoint mp = iterator->second;
+          MountPoint mp = iterator->second;
           for (int i = 0; i < mp.mount_point_markers.size(); i++)
           {
-               BuilditConfig::MountPointMarker marker;
+               MountPointMarker marker;
                ROS_INFO("Creating marker %s", marker.marker_name.c_str());
                this->create_mount_point_marker(marker.marker_name, marker.pose);
           }
