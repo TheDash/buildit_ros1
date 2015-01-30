@@ -238,6 +238,8 @@ void MountPointsTabWidget::create_mount_point_marker(std::string link_name, geom
          mp_msg.request.parent_position.y = pose.position.y;
          mp_msg.request.parent_position.z = pose.position.z;
 
+         ROS_INFO("Requesting to create marker %s at X: %i Y: %i Z: %i", link_name.c_str(), pose.position.x, pose.position.y, pose.position.z);
+
          // Send the call 
          if (client.call(mp_msg))
          {
@@ -342,7 +344,7 @@ void MountPointsTabWidget::create_mount_point_markers()
           MountPoint mp = iterator->second;
           for (int i = 0; i < mp.mount_point_markers.size(); i++)
           {
-               MountPointMarker marker;
+               MountPointMarker marker = mp.mount_point_markers.at(i);
                ROS_INFO("Creating marker %s", marker.marker_name.c_str());
                this->create_mount_point_marker(marker.marker_name, marker.pose);
           }
