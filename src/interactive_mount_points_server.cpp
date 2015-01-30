@@ -18,7 +18,9 @@
 #include <algorithm>
 #include <sstream>
 #include <map>
-
+#include <iostream>
+#include <string>
+#include <sstream>
 // GLOBAL VARS
 #define ATTACH_MENU_ID 1
 #define UNATTACH_MENU_ID 2
@@ -487,6 +489,8 @@ int count_total_markers(std::string name)
    return total;
 }
 
+
+std::map<std::string, int> marker_counts;
 // The server will have to spawn markers at the locations told, and be passed messages. 
 bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
 {
@@ -498,8 +502,12 @@ bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, 
    {
        if (marker_list.at(i) == name.c_str())
        {
-          int nummarkers = count_total_markers(name);
-          name.append("_").append(nummarkers+"");
+          //int nummarkers = count_total_markers(name);
+          marker_counts.insert(std::pair<std::string, int> (name, 1));
+          std::stringstream convert;
+          convert << marker_counts[name];
+          name.append("_").append(convert.str());
+          marker_counts[name]++;
        }
    }
    marker_list.push_back(name);
