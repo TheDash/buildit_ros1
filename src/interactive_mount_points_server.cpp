@@ -466,7 +466,8 @@ int count_total_markers(std::string name)
          // actual name of the marker being checked
          std::string actual_name;
          std::string delimiter("_");
-         actual_name = name.substr(0, name.find(delimiter));
+         //actual_name = name.substr(0, name.find(delimiter));
+         
 
     int total = 0;
     for (int i = 0; i < marker_list.size(); i++)
@@ -474,9 +475,10 @@ int count_total_markers(std::string name)
          // get the actual name of existing marker
          std::string existing_actual_name;
          std::string current_marker = marker_list.at(i);
-         existing_actual_name = current_marker.substr(0, current_marker.find(delimiter));
+         existing_actual_name = current_marker.substr(0, current_marker.find_last_of(delimiter));
          // get all the substring delimited and count them
-         if (actual_name.compare(existing_actual_name) == 0)
+              ROS_INFO(" %s is equal to %s", actual_name.c_str(), existing_actual_name.c_str());
+         if (actual_name == existing_actual_name)
          {
               total++;
          }
