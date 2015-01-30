@@ -1,6 +1,6 @@
 #include <buildit_ros/buildit_config.h>
 
-void operator >> (const YAML::Node& node, BuilditConfig::MountPoints mount_points);	
+void operator >> (const YAML::Node& node, BuilditConfig::MountPoints& mount_points);	
 void operator >> (const YAML::Node& node, BuilditConfig::MountPoint& mount_point);
 void operator >> (const YAML::Node& node, geometry_msgs::Quaternion& orientation);
 void operator >> (const YAML::Node& node, geometry_msgs::Point& position);
@@ -25,7 +25,7 @@ BuilditConfig::BuilditConfig() :
 //     - mount_location_link_1:
 //     - mount_location_link_2:
 // It takes in a MountPoints type and breaks it down into an individual MountPoint. 
-void operator >> (const YAML::Node& node, BuilditConfig::MountPoints mount_points)
+void operator >> (const YAML::Node& node, BuilditConfig::MountPoints& mount_points)
 {
    YAML::Iterator it;
    for (it = node.begin(); it != node.end(); ++it)
@@ -33,9 +33,13 @@ void operator >> (const YAML::Node& node, BuilditConfig::MountPoints mount_point
       std::string key = it.first().to<std::string>();
       BuilditConfig::MountPoint point;
       node[key] >> point;
-      mount_points.mount_points[key] = point;
+      mount_points.mount_points.insert( std::pair<std::string, BuilditConfig::MountPoint>(key, point) );
       ROS_INFO("Link %s has mount point markers.", key.c_str());
    }
+   //if (!mount_points.mount_points.empty())
+   //{ 
+   //   ROS_INFO("Number of mount points EQUALS # %s", mount_points.mount_points.size());
+   //} else { ROS_ERROR("NULL MOUNT POINTS"); }
 }
 
 // This parses the mount point node. It looks for all of the markers inside that mount point. E.g

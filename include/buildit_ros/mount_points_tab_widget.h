@@ -85,7 +85,8 @@ Q_OBJECT
         ros::NodeHandle nh;
         ros::ServiceServer or_srv;
         ros::ServiceServer pos_srv;
-
+        void create_mount_point_marker(std::string, geometry_msgs::Pose);
+        void create_mount_point_markers();
         void create_marker_position_editor();
         void create_marker_orientation_editor();
         void populate_links_table_after_button();

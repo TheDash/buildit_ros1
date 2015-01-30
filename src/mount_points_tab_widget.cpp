@@ -39,11 +39,7 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     this->create_hide_mount_points_button();
     this->create_marker_orientation_editor();
     this->create_marker_position_editor();
-
-    // Load a default configuration to test code
     this->buildit_config = new BuilditConfig();
-    //buildit_config->load("/home/dash/hackweek_ws/src/buildit_ros/config/grizzly_base.yaml");
-    //buildit_config->load_robot_description(buildit_config->model_path);
 }
 
 
@@ -231,6 +227,28 @@ void MountPointsTabWidget::create_hide_mount_points_button()
 }
 
 
+void MountPointsTabWidget::create_mount_point_marker(std::string link_name, geometry_msgs::Pose pose)
+{
+         // Make service call
+         ros::ServiceClient client = this->nh.serviceClient<buildit_ros::InteractiveMountPoint>("spawn_mount_point_marker");
+         buildit_ros::InteractiveMountPoint mp_msg;
+         mp_msg.request.link_name = link_name;
+         mp_msg.request.parent_name = link_name;
+         mp_msg.request.parent_position.x = pose.position.x;
+         mp_msg.request.parent_position.y = pose.position.y;
+         mp_msg.request.parent_position.z = pose.position.z;
+
+         // Send the call 
+         if (client.call(mp_msg))
+         {
+
+         }
+         else
+         {
+            ROS_INFO("Failed to send markers to server");
+         }
+}
+
 // This will take all of the links selected in the selected table
 // and create interactive markers at those link points
 void MountPointsTabWidget::create_mount_points_button_clicked()
@@ -308,6 +326,28 @@ void MountPointsTabWidget::populate_links_table_after_button()
 
 }
 
+void MountPointsTabWidget::create_mount_point_markers()
+{
+     BuilditConfig::MountPoints mount_points = this->buildit_config->getMountPoints();
+     std::map<std::string, BuilditConfig::MountPoint> point_map = mount_points.mount_points;
+
+     ROS_INFO("# OF MOUNT LOCATIONS: %s", mount_points.mount_points.size());
+
+     typedef std::map<std::string, BuilditConfig::MountPoint>::iterator it_type;
+     for (it_type iterator = point_map.begin(); iterator != point_map.end(); iterator++)
+     { 
+          geometry_msgs::Pose pose;
+          BuilditConfig::MountPoint mp = iterator->second;
+          for (int i = 0; i < mp.mount_point_markers.size(); i++)
+          {
+               BuilditConfig::MountPointMarker marker;
+               ROS_INFO("Creating marker %s", marker.marker_name.c_str());
+               this->create_mount_point_marker(marker.marker_name, marker.pose);
+          }
+     }
+     
+}
+
 // Load the URDF and set the robot description to be whatever is inside the urdf 
 void MountPointsTabWidget::load_urdf_base_button_clicked()
 {
@@ -350,6 +390,9 @@ void MountPointsTabWidget::load_urdf_base_button_clicked()
            ROS_INFO("Loading config %s", fileName.c_str());
            buildit_config->load_robot_description(buildit_config->getModelPath());
            ROS_INFO("Loading model %s", buildit_config->getModelPath().c_str());
+
+           // Spawn markers
+           this->create_mount_point_markers();
         }
         else 
         {
