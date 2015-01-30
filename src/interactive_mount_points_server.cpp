@@ -1,4 +1,7 @@
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include <ros/ros.h>
 #include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
@@ -23,6 +26,9 @@
 #include <sstream>
 
 #include <buildit_ros/buildit_config.h>
+
+#define SSTR( x ) dynamic_cast< std::ostringstream & >( \
+        ( std::ostringstream() << std::dec << x ) ).str()
 
 // GLOBAL VARS
 #define ATTACH_MENU_ID 1
@@ -470,33 +476,6 @@ bool clear_all_markers(buildit_ros::InteractiveMountPoint::Request &req, buildit
     return true;
 }
 
-int count_total_markers(std::string name)
-{
-         // actual name of the marker being checked
-         std::string actual_name;
-         std::string delimiter("_");
-         //actual_name = name.substr(0, name.find(delimiter));
-         
-
-    int total = 0;
-    for (int i = 0; i < marker_list.size(); i++)
-    {
-         // get the actual name of existing marker
-         std::string existing_actual_name;
-         std::string current_marker = marker_list.at(i);
-         existing_actual_name = current_marker.substr(0, current_marker.find_last_of(delimiter));
-         // get all the substring delimited and count them
-              ROS_INFO(" %s is equal to %s", actual_name.c_str(), existing_actual_name.c_str());
-         if (actual_name == existing_actual_name)
-         {
-              total++;
-         }
-    }
-   ROS_INFO("Mount link %s now has %i markers", name.c_str(), total);
-   return total;
-}
-
-
 std::map<std::string, int> marker_counts;
 // The server will have to spawn markers at the locations told, and be passed messages. 
 bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
@@ -516,113 +495,23 @@ bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, 
    pose.position = p;
 
    marker.pose = pose;
+   marker.marker_name.append("_").append(SSTR(marker.number_of_markers));
 
    mount_point_markers.insert( std::pair<std::string, MountPointMarker>(marker.marker_name, marker) );
-
-   std::string name = req.link_name;
-   std::string parent_name = req.parent_name;
-
-   ROS_INFO("Marker count %d", marker_list.size());
-   for (int i = 0; i < marker_list.size(); i++)
-   {
-       if (marker_list.at(i) == name.c_str())
-       {
-          //int nummarkers = count_total_markers(name);
-          marker_counts.insert(std::pair<std::string, int> (name, 1));
-          std::stringstream convert;
-          convert << marker_counts[name];
-          //if (marker_counts[name] == 1)
-          //{
-              //name.append(convert.str());
-              //name.append("_").append(convert.str());
-          //} else if (marker_counts[name] > 1)
-          //{
-          //    
-          //}
-          marker_counts[name]++;
-       }
-   }
-   marker_list.push_back(name);
-
-
-
-   //visualization_msgs::InteractiveMarker m;
-   /*if (server->get(name, m))
-   {
-     std::string markercount;
-     std::string delimiter("_");
-     markercount = name.substr(name.find(delimiter), name.size());
-     int count = std::stoi(markercount);
-     if (markercount == 1)
-     {
-         
-     }
-      // This means there's a marker already with the same name. But when adding the markers, shouldn't just keep a count of how many time that marker is in the server? 
-// Marker names:
-// sensor_link_1
-// sensor_link_2
-// sensor_link_3
-// 
-// From fresh:
-// should add a marker named {link_name}_1
-// and if {link_name}_X exists, create {link_name}_x+1
-   }*/
-
-
-  /* int total = 0;
-   bool contains = false;
-   std::string actual_name;
-   for (int i = 0; i < marker_list.size(); i++) 
-   {
-       std::string marker_name = marker_list.at(i);
-       std::string delimiter = "_";
-       actual_name = marker_name.substr(0, marker_name.find(delimiter));
-       if (actual_name.c_str() == name.c_str())
-       {
-          contains = true;
-          total++;
-       }
-   }
-
-   if (!contains)
-   {
-     marker_list.push_back(actual_name);
-   } else
-   {
-     marker_list.push_back(actual_name.append("_").append(total + ""));
-   }*/
    
-   /*if (std::find(marker_list.begin(), marker_list.end(), name.c_str()) != marker_list.end())
-   {
-      int total = 0;
-      // count how many times its in there.
-      for (int i = 0; i < marker_list.size(); i++)
-      {
-         if (marker_list.at(i) == name)
-         {
-                total++;
-         }
-      }
-      if (total > 0)
-      {
-       std::string num = static_cast<std::ostringstream*>( &(std::ostringstream() << total) )->str();
-       name.append("_").append(num);
-      }
-   }*/
    // The position of the parent link should be passed in as a parameter.
    float x;
    float y;
    float z;
+
    x = req.parent_position.x;
    y = req.parent_position.y;
    z = req.parent_position.z;
 
-   // Save parent_position object in map with the link_name, so that it can be queried. 
-   parent_positions[name] = req.parent_position;
-
    // Create 6dof marker with that link name. 
-   tf::Vector3 position = tf::Vector3( x, y , z);
-   make6DofMarkerWithName( name, parent_name, false, visualization_msgs::InteractiveMarkerControl::MOVE_ROTATE_3D, position, true );
+   tf::Vector3 position = tf::Vector3( marker.pose.position.x, marker.pose.position.y , marker.pose.position.z);
+  
+   make6DofMarkerWithName( marker.marker_name, marker.link_name, false, visualization_msgs::InteractiveMarkerControl::MOVE_ROTATE_3D, position, true );
    res.spawned = true;
    server->applyChanges();
 

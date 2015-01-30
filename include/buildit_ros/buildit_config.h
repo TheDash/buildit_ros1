@@ -20,6 +20,7 @@ class MountPointMarker
    public:
        MountPointMarker();
        ~MountPointMarker();
+       std::string link_name;
        std::string marker_name;
        geometry_msgs::Pose pose;
        static int number_of_markers;
