@@ -10,6 +10,8 @@
 #include <QTableWidget>
 #include <QList>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QDataStream>
 #include <QProcess>
 #include <moveit/robot_model/robot_model.h>
 #include <moveit/robot_model/link_model.h>
@@ -67,6 +69,7 @@ Q_OBJECT
         QWidget * orientation_editor;
         QWidget * position_editor;      
 
+        QPushButton * save_model_button;
         QPushButton * set_position_button;
         QPushButton * set_orientation_button;
         QPushButton * load_urdf_base_button;
@@ -85,6 +88,8 @@ Q_OBJECT
         ros::NodeHandle nh;
         ros::ServiceServer or_srv;
         ros::ServiceServer pos_srv;
+
+        void create_save_model_button();
         void clear_marker_server();
         void create_mount_point_marker_from_yaml(std::string link_name, geometry_msgs::Pose pose);
         void create_mount_point_marker(std::string, geometry_msgs::Pose);
@@ -104,6 +109,7 @@ Q_OBJECT
         std::vector<const robot_model::LinkModel*> mount_point_links;
 
    private Q_SLOTS:
+        void save_model_button_clicked();
         void set_position_button_clicked();
         void set_orientation_button_clicked();
         void hide_mount_points_button_clicked();

@@ -211,7 +211,20 @@ void BuilditConfig::load_robot_description()
       } 
 }
 
-void BuilditConfig::save(std::string name)
+void BuilditConfig::save(std::string& contents)
 {
+      YAML::Emitter yamlfile;
+      yamlfile << YAML::BeginMap;
+      yamlfile << YAML::Key << "name";
+      yamlfile << YAML::Value << this->name;
+      yamlfile << YAML::Key << "edit_positions";
+      yamlfile << YAML::Value << this->edit_positions;
+      yamlfile << YAML::Key << "edit_orientation";
+      yamlfile << YAML::Value << this->edit_orientation;
+      yamlfile << YAML::Key << "modify_model";
+      yamlfile << YAML::Value << this->modify_model; 
+      yamlfile << YAML::Key << "model";
+      yamlfile << YAML::Value << this->model_path;
 
+      ROS_INFO("YAML: %s", yamlfile.c_str());      
 }

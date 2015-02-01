@@ -68,7 +68,7 @@ class BuilditConfig
       //inline std::map<std::string, std::vector<geometry_msgs::Pose> > getMountPoints() { return mount_points; }
     
       void load(std::string name);
-      void save(std::string config_name);
+      void save(std::string& contents);
       void load_robot_description();
     private:
 

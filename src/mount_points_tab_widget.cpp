@@ -28,6 +28,7 @@ MountPointsTabWidget::MountPointsTabWidget(QWidget * parent)
     this->create_load_base_urdf_button();
     this->create_create_mount_points_button();
     this->create_mount_points_table_widget();
+    this->create_save_model_button();
 
      if (!this->links.empty())
     {
@@ -48,6 +49,52 @@ MountPointsTabWidget::~MountPointsTabWidget()
 {
 
 }
+
+
+void MountPointsTabWidget::save_model_button_clicked()
+{
+    // Get the output resultant file from save(). Then dialog editor to put it in place
+    //this->buildit_config->save();
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save Model"), "", tr("Mount point config files (*.yaml);;All Files (*)"));
+
+   if (fileName.isEmpty())
+   {
+       return;
+   }
+   else 
+   {
+      QFile file(fileName);
+      if (!file.open(QIODevice::WriteOnly)) 
+      {
+             QMessageBox::information(this, tr("Unable to open file"),
+             file.errorString());
+             return;
+      }
+
+         // File opened, now use YAML parser to help make the output .yaml config.
+         // Need to get the info from the system.
+        // buildit_config->
+         // Need all of the MountPoints, MountPointMarkers. 
+
+         
+
+         QDataStream out(&file);
+         out.setVersion(QDataStream::Qt_4_5);
+         std::string contents;
+         buildit_config->save(contents);
+         out << contents.c_str();
+    }
+}
+
+void MountPointsTabWidget::create_save_model_button()
+{
+      save_model_button = new QPushButton(QString(QString::fromStdString("Save Model")), this);
+      save_model_button->setGeometry(QRect(700, 85, 120, 50));
+      save_model_button->setVisible(true);
+
+     connect(this->save_model_button, SIGNAL(clicked()), this, SLOT(save_model_button_clicked()));
+}
+
 
 void MountPointsTabWidget::clear_marker_server()
 {
