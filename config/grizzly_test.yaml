@@ -1,9 +1,0 @@
-name: grizzly_base
-edit_positions: false
-edit_orientation: false
-modify_model: false
-model: /opt/ros/hydro/share/grizzly_description/urdf/base.urdf.xacro
-mount_points:
-  front_axle_link:
-    front_axle_link_1:
-      front_axle_link_1:
