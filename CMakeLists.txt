@@ -9,6 +9,12 @@ add_service_files(
    SetOrientation.srv
    SetPosition.srv
    UpdateInteractiveMountPoint.srv
+   GetInteractiveMarkers.srv
+)
+
+add_message_files(
+  FILES
+  MountPointMarker.msg
 )
 
 generate_messages(DEPENDENCIES std_msgs geometry_msgs visualization_msgs)

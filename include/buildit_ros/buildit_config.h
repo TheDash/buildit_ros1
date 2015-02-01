@@ -46,6 +46,8 @@ class MountPoints
         MountPoints();
         ~MountPoints();
         std::map<std::string, MountPoint> mount_points;
+        inline void add_mount_point(std::string link_location, MountPoint& p) { mount_points.insert(std::pair<std::string, MountPoint>(link_location, p)); }
+
 };
 
 

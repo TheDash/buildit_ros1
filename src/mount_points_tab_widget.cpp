@@ -86,8 +86,7 @@ void MountPointsTabWidget::create_save_model_button()
       save_model_button = new QPushButton(QString(QString::fromStdString("Save Model")), this);
       save_model_button->setGeometry(QRect(700, 85, 120, 50));
       save_model_button->setVisible(true);
-
-     connect(this->save_model_button, SIGNAL(clicked()), this, SLOT(save_model_button_clicked()));
+      connect(this->save_model_button, SIGNAL(clicked()), this, SLOT(save_model_button_clicked()));
 }
 
 
@@ -419,8 +418,6 @@ void MountPointsTabWidget::create_mount_point_markers()
      MountPoints mount_points = buildit_config->getMountPoints();
      std::map<std::string, MountPoint> point_map = mount_points.mount_points;
 
-     ROS_INFO("# OF MOUNT LOCATIONS: %u", point_map.size());
-     
      typedef std::map<std::string, MountPoint>::iterator it_type;
      for (it_type iterator = point_map.begin(); iterator != point_map.end(); iterator++)
      { 

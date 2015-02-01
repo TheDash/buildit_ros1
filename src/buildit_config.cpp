@@ -244,7 +244,6 @@ void BuilditConfig::load(std::string name)
 
    doc["mount_points"] >> this->mount_points;
    ROS_INFO("MOUNT LOCATOINS %u", this->mount_points.mount_points.size());
-   //if (this->mount_points.mount_points.empty()) { ROS_INFO("EMPTY FUKEN MAP"); };
 }
 
 void BuilditConfig::load_robot_description()
