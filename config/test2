@@ -1,0 +1,5 @@
+name: grizzly_base
+edit_positions: false
+edit_orientation: false
+modify_model: false
+model: /opt/ros/hydro/share/grizzly_description/urdf/base.urdf.xacro

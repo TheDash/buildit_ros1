@@ -59,30 +59,25 @@ void MountPointsTabWidget::save_model_button_clicked()
 
    if (fileName.isEmpty())
    {
+       ROS_WARN("%s is not opening.", fileName.toStdString().c_str());
        return;
    }
    else 
    {
       QFile file(fileName);
-      if (!file.open(QIODevice::WriteOnly)) 
+      if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) 
       {
              QMessageBox::information(this, tr("Unable to open file"),
              file.errorString());
              return;
       }
 
-         // File opened, now use YAML parser to help make the output .yaml config.
-         // Need to get the info from the system.
-        // buildit_config->
-         // Need all of the MountPoints, MountPointMarkers. 
-
-         
-
-         QDataStream out(&file);
-         out.setVersion(QDataStream::Qt_4_5);
+         QTextStream out(&file);
          std::string contents;
          buildit_config->save(contents);
          out << contents.c_str();
+         file.close();
+
     }
 }
 

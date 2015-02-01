@@ -226,5 +226,5 @@ void BuilditConfig::save(std::string& contents)
       yamlfile << YAML::Key << "model";
       yamlfile << YAML::Value << this->model_path;
 
-      ROS_INFO("YAML: %s", yamlfile.c_str());      
+      contents = std::string(yamlfile.c_str());
 }
