@@ -5,8 +5,11 @@ void operator >> (const YAML::Node& node, MountPoint& mount_point);
 void operator >> (const YAML::Node& node, MountPointMarker& marker);
 void operator >> (const YAML::Node& node, geometry_msgs::Point& position);
 void operator >> (const YAML::Node& node, geometry_msgs::Quaternion& orientation);
-
-
+YAML::Emitter& operator << (YAML::Emitter& out, geometry_msgs::Quaternion& orientation);
+YAML::Emitter& operator << (YAML::Emitter& out, geometry_msgs::Point& position);
+YAML::Emitter& operator << (YAML::Emitter& out, MountPointMarker&);
+YAML::Emitter& operator << (YAML::Emitter& out, MountPoints&);
+YAML::Emitter& operator << (YAML::Emitter& out, MountPoint&);
 
 MountPoints::MountPoints()
 {
@@ -61,6 +64,29 @@ BuilditConfig::BuilditConfig() :
 
 }
 
+
+// Insert mount_points.
+YAML::Emitter& operator << (YAML::Emitter& out, MountPoints& mount_points)
+{
+  out << YAML::BeginMap;
+  // Iterate all the mount points and create a map for them as well.
+  typedef std::map<std::string, MountPoint>::iterator it_type;
+  for (it_type iterator = mount_points.mount_points.begin(); iterator != mount_points.mount_points.end(); iterator++)
+  {
+     // loop here
+     // KEY: mount_point name 
+     // Value: mount_point.
+
+     // E.g: front_axle_link:
+     //         front_axle_link_1: (type mount_point, which is also another map)
+     out << YAML::Key << iterator->first;
+     out << YAML::Value << iterator->second;
+  }
+  out << YAML::EndMap;
+
+  return out;
+}
+
 // This parses a mount points node. It looks for all of the mount points inside of the mount_points tag and throws it down.
 // E.g
 // mount_points:
@@ -76,11 +102,25 @@ void operator >> (const YAML::Node& node, MountPoints& mount_points)
       MountPoint point;
       node[key] >> point;
       mount_points.mount_points.insert( std::pair<std::string, MountPoint>(key, point) );
-      ROS_INFO("GUNNA FAIL MY NUGUH?");
-      ROS_INFO("Inserted KEY: %s with %u mount points", key.c_str(), point.mount_point_markers.size());
    }
-   ROS_INFO("MOUNT LOCATIONS #%u", mount_points.mount_points.size());
-   
+}
+
+// Insert MountPoint
+YAML::Emitter& operator << (YAML::Emitter& out, MountPoint& mount_point)
+{
+    out << YAML::BeginMap;
+    // Do this for all of the markers on the mount point.
+    std::vector<MountPointMarker> markers = mount_point.mount_point_markers;
+
+    for (int i = 0; i < markers.size(); i++)
+    {
+        MountPointMarker m = markers.at(i);
+        out << YAML::Key << m.marker_name;
+        out << YAML::Value << m;
+    }
+    out << YAML::EndMap;
+
+    return out;
 }
 
 // This parses the mount point node. It looks for all of the markers inside that mount point. E.g
@@ -101,14 +141,26 @@ void operator >> (const YAML::Node& node, MountPoint& mount_point)
       ROS_INFO("Adding mount point marker named %s", key.c_str());
       node[key] >> marker;
       mount_point.mount_point_markers.push_back(marker);
-      ROS_INFO("Marker address? %u", &marker);
-      ROS_INFO("Added marker %s", marker.marker_name.c_str());
-      ROS_INFO("size? %u", mount_point.mount_point_markers.size());
    }
-   ROS_INFO("GUNNA FAIL?");
-   ROS_INFO("Number of MOUNT POINT MARKERS %i", mount_point.mount_point_markers.size());
 
 }
+
+// Insert quaternion
+YAML::Emitter& operator << (YAML::Emitter& out, geometry_msgs::Quaternion& orientation)
+{
+     out << YAML::BeginMap;
+  //out << YAML::Key << "orientation";
+  out << YAML::Key << "r";
+  out << YAML::Value << orientation.x;
+  out << YAML::Key << "p";
+  out << YAML::Value << orientation.y;
+  out << YAML::Key << "y";
+  out << YAML::Value << orientation.z;
+  out << YAML::EndMap;
+ 
+  return out;
+}
+
 
 // Extract quaternion
 void operator >> (const YAML::Node& node, geometry_msgs::Quaternion& orientation)
@@ -122,17 +174,43 @@ void operator >> (const YAML::Node& node, geometry_msgs::Quaternion& orientation
    orientation.z = node["y"].to<float>();
 }
 
+// Insert position
+YAML::Emitter& operator << (YAML::Emitter& out, geometry_msgs::Point& position)
+{
+  out << YAML::BeginMap;
+  //out << YAML::Key << "position";
+  out << YAML::Key << "x";
+  out << YAML::Value << position.x;
+  out << YAML::Key << "y";
+  out << YAML::Value << position.y;
+  out << YAML::Key << "z";
+  out << YAML::Value << position.z;
+  out << YAML::EndMap;
+
+  return out;     
+
+}
+
 // Extract position
 void operator >> (const YAML::Node& node, geometry_msgs::Point& position)
 {
-   ROS_INFO("GUNNA FAIL WTF LOL");
    position.x = node["x"].to<float>();
-   ROS_INFO("X VALUE %f", position.x);
    position.y = node["y"].to<float>();
    position.z = node["z"].to<float>();
-   //node["x"] >> position.x;
-   //node["y"] >> position.y;
-   //node["z"] >> position.z;
+}
+
+// Insert a marker
+YAML::Emitter& operator << (YAML::Emitter& out, MountPointMarker& marker)
+{
+    //out << YAML::Key << marker.marker_name;
+    out << YAML::BeginMap;
+    out << YAML::Key << "position";
+    out << YAML::Value << marker.pose.position;
+    out << YAML::Key << "orientation";
+    out << YAML::Value << marker.pose.orientation;
+    out << YAML::EndMap;
+
+    return out;
 }
 
 // Extract a marker
@@ -225,6 +303,9 @@ void BuilditConfig::save(std::string& contents)
       yamlfile << YAML::Value << this->modify_model; 
       yamlfile << YAML::Key << "model";
       yamlfile << YAML::Value << this->model_path;
+
+      yamlfile << YAML::Key << "mount_points";
+      yamlfile << YAML::Value << this->mount_points;
 
       contents = std::string(yamlfile.c_str());
 }
