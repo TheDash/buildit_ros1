@@ -362,7 +362,7 @@ void MountPointsTabWidget::create_mount_points_button_clicked()
          // Send the call 
          if (client.call(mp_msg))
          {
-
+            ROS_INFO("Attempting to create marker %s", mp_msg.request.link_name.c_str());
          }
          else
          {

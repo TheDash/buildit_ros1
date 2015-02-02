@@ -588,12 +588,14 @@ bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, 
    {
        // Append not the number of markers, but the number of count that is in there.
        marker.marker_id = total;
-   mount_point_markers.insert( std::pair<std::string, MountPointMarker>(marker.link_name, marker) );
        marker.marker_name.append("_").append(SSTR(total));
+   mount_point_markers.insert( std::pair<std::string, MountPointMarker>(marker.marker_name, marker) );
+       ROS_INFO("Inserted marker %s to marker server", marker.marker_name.c_str());
 
    } else
    {
-         mount_point_markers.insert( std::pair<std::string, MountPointMarker>(marker.link_name, marker) );
+         mount_point_markers.insert( std::pair<std::string, MountPointMarker>(marker.marker_name, marker) );
+       ROS_INFO("Inserted marker %s to marker server", marker.marker_name.c_str());
    }
 
    // Create 6dof marker with that link name. 

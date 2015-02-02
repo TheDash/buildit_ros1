@@ -297,6 +297,12 @@ void BuilditConfig::get_all_mount_point_markers_from_server()
    if (get_all_markers.call(get_m))
    {
         ROS_INFO("Received %i markers", get_m.response.markers.size());
+        std::vector<buildit_ros::MountPointMarker> markers;
+        markers = get_m.response.markers;
+        for (int i = 0; i < markers.size(); i++)
+        {
+           ROS_INFO("Marker %s", markers.at(i).marker_name.c_str());
+        } 
    } 
    else 
    {
