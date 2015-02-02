@@ -466,15 +466,14 @@ std::vector<std::string> marker_list;
 bool get_all_markers(buildit_ros::GetInteractiveMarkers::Request &req, buildit_ros::GetInteractiveMarkers::Response &res)
 {
 
-   const std::vector<MountPointMarker> markers;
    // Iterate the markers map
-     typedef std::multimap<std::string, MountPointMarker>::iterator it_type;
+     typedef std::map<std::string, MountPointMarker>::iterator it_type;
      for (it_type iterator = mount_point_markers.begin(); iterator != mount_point_markers.end(); ++iterator)
      { 
           buildit_ros::MountPointMarker m;
           MountPointMarker marker;
           marker = iterator->second;
-          ROS_INFO("Sending marker %s", marker.link_name.c_str());
+          ROS_INFO("Sending marker %s", marker.marker_name.c_str());
           m.link_name = marker.link_name;
           m.marker_name = marker.marker_name;
           m.pose = marker.pose;
@@ -522,6 +521,7 @@ bool load_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, b
 {
 
    MountPointMarker marker;
+   marker.link_name = req.link_name;
    marker.marker_name = req.link_name;
    ROS_INFO("Loading marker %s from YAML file", marker.marker_name.c_str());
    marker.number_of_markers++;
@@ -542,7 +542,8 @@ bool load_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, b
     // Create 6dof marker with that link name. 
    tf::Vector3 position = tf::Vector3( marker.pose.position.x, marker.pose.position.y , marker.pose.position.z);
  
-   mount_point_markers.insert(std::pair<std::string, MountPointMarker>(marker.link_name, marker));
+   ROS_INFO("Inserted marker %s", marker.marker_name.c_str());
+   mount_point_markers.insert(std::pair<std::string, MountPointMarker>(marker.marker_name, marker));
    make6DofMarkerWithName( marker.marker_name, marker.link_name, false, visualization_msgs::InteractiveMarkerControl::MOVE_ROTATE_3D, position, true );
    res.spawned = true;
    server->applyChanges();
