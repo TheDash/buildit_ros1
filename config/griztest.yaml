@@ -1,0 +1,35 @@
+name: grizzly_base
+edit_positions: false
+edit_orientation: false
+modify_model: false
+model: /opt/ros/hydro/share/grizzly_description/urdf/base.urdf.xacro
+mount_points:
+  front_axle_link:
+    front_axle_link_1:
+      position:
+        x: 1
+        y: 1
+        z: 1
+      orientation:
+        r: 0.5
+        p: 0
+        y: 0
+  sensor_anchor_link:
+    sensor_anchor_link_1:
+      position:
+        x: 1
+        y: 1
+        z: 1
+      orientation:
+        r: 0.5
+        p: 0
+        y: 0
+    sensor_anchor_link_2:
+      position:
+        x: 1
+        y: 1
+        z: 2
+      orientation:
+        r: 0.5
+        p: 0
+        y: 0

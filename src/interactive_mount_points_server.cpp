@@ -79,7 +79,7 @@ bool clear_all_markers(buildit_ros::InteractiveMountPoint::Request &req, buildit
 bool load_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res);
 
 std::map<std::string, geometry_msgs::Vector3> parent_positions;
-std::multimap<std::string, MountPointMarker> mount_point_markers;
+std::map<std::string, MountPointMarker> mount_point_markers;
 std::vector<std::string> marker_names;
 
 int MountPointMarker::number_of_markers = 0;
@@ -311,6 +311,10 @@ void processFeedback( const InteractiveMarkerFeedbackConstPtr &feedback )
       break;
 
     case visualization_msgs::InteractiveMarkerFeedback::POSE_UPDATE:
+
+      // Update pose DB
+      mount_point_markers[feedback->marker_name].pose = feedback->pose;
+ 
       ROS_INFO_STREAM( s.str() << ": pose changed"
           << "\nposition = "
           << feedback->pose.position.x
@@ -470,12 +474,12 @@ bool get_all_markers(buildit_ros::GetInteractiveMarkers::Request &req, buildit_r
           buildit_ros::MountPointMarker m;
           MountPointMarker marker;
           marker = iterator->second;
-
+          ROS_INFO("Sending marker %s", marker.link_name.c_str());
           m.link_name = marker.link_name;
           m.marker_name = marker.marker_name;
           m.pose = marker.pose;
           //buildit_ros::MountPointMarker m = iterator->second();
-          res.markers.push_back(m); 
+          res.markers.push_back(m);
      }   
      return true;
 }
@@ -493,7 +497,9 @@ bool update_mount_point_marker(buildit_ros::UpdateInteractiveMountPoint::Request
    req.new_pose.position.y = new_pos.getY();
    req.new_pose.position.z = new_pos.getZ();
 
-   // Update the marker in the DB of markers. 
+   // Update the marker in the DB of markers.
+   MountPointMarker mpm = mount_point_markers[req.marker_name];
+   mpm.pose = req.new_pose;
 
    server->setPose(req.marker_name, req.new_pose);
    server->applyChanges();
@@ -536,7 +542,6 @@ bool load_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, b
     // Create 6dof marker with that link name. 
    tf::Vector3 position = tf::Vector3( marker.pose.position.x, marker.pose.position.y , marker.pose.position.z);
  
-
    mount_point_markers.insert(std::pair<std::string, MountPointMarker>(marker.link_name, marker));
    make6DofMarkerWithName( marker.marker_name, marker.link_name, false, visualization_msgs::InteractiveMarkerControl::MOVE_ROTATE_3D, position, true );
    res.spawned = true;
@@ -550,8 +555,6 @@ std::map<std::string, int> marker_counts;
 // The server will have to spawn markers at the locations told, and be passed messages. 
 bool spawn_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, buildit_ros::InteractiveMountPoint::Response &res)
 {
-    
-
    // Create a mount point marker object.
    MountPointMarker marker;
    marker.marker_name = req.link_name;
