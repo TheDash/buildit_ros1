@@ -39,6 +39,7 @@ class MountPoint
    public:
        MountPoint();
        ~MountPoint();
+       std::string link_location;
        std::vector<MountPointMarker> mount_point_markers;
 };
 
@@ -49,6 +50,7 @@ class MountPoints
         ~MountPoints();
         std::map<std::string, MountPoint> mount_points;
         inline void add_mount_point(std::string link_location, MountPoint& p) { mount_points.insert(std::pair<std::string, MountPoint>(link_location, p)); }
+        //inline void has_mount_point(MountPoint & p)
 
 };
 

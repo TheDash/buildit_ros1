@@ -91,7 +91,7 @@ Q_OBJECT
 
         void create_save_model_button();
         void clear_marker_server();
-        void create_mount_point_marker_from_yaml(std::string link_name, geometry_msgs::Pose pose);
+        void create_mount_point_marker_from_yaml(std::string parent_name, std::string link_name, geometry_msgs::Pose pose);
         void create_mount_point_marker(std::string, geometry_msgs::Pose);
         void create_mount_point_markers();
         void create_marker_position_editor();

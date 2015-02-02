@@ -100,6 +100,7 @@ void operator >> (const YAML::Node& node, MountPoints& mount_points)
    {
       std::string key = it.first().to<std::string>();
       MountPoint point;
+      point.link_location = key;
       node[key] >> point;
       mount_points.mount_points.insert( std::pair<std::string, MountPoint>(key, point) );
    }
@@ -137,6 +138,7 @@ void operator >> (const YAML::Node& node, MountPoint& mount_point)
    {
       std::string key = it.first().to<std::string>();
       MountPointMarker marker;
+      marker.link_name = mount_point.link_location;
       marker.marker_name = key;
       ROS_INFO("Adding mount point marker named %s", key.c_str());
       node[key] >> marker;
@@ -243,7 +245,6 @@ void BuilditConfig::load(std::string name)
    ROS_INFO("YAML model_path: %s", this->model_path.c_str());
 
    doc["mount_points"] >> this->mount_points;
-   ROS_INFO("MOUNT LOCATOINS %u", this->mount_points.mount_points.size());
 }
 
 void BuilditConfig::load_robot_description()
@@ -294,14 +295,30 @@ void BuilditConfig::get_all_mount_point_markers_from_server()
    ros::ServiceClient get_all_markers = nh.serviceClient<buildit_ros::GetInteractiveMarkers>("get_all_markers");
    buildit_ros::GetInteractiveMarkers get_m;
 
+   //this->mount_points.mount_points.clear();
+
    if (get_all_markers.call(get_m))
    {
         ROS_INFO("Received %i markers", get_m.response.markers.size());
         std::vector<buildit_ros::MountPointMarker> markers;
         markers = get_m.response.markers;
+    
+        std::map<std::string, MountPoint> mount_points;
+        MountPoint mp;
+        
         for (int i = 0; i < markers.size(); i++)
         {
-           ROS_INFO("Marker %s", markers.at(i).marker_name.c_str());
+           ROS_INFO("Marker: NAME %s", markers.at(i).marker_name.c_str());
+           ROS_INFO("Marker: LINK LOCATION %s", markers.at(i).link_name.c_str());
+           MountPointMarker marker;
+           marker.link_name = markers.at(i).link_name;
+           marker.marker_name = markers.at(i).marker_name;
+           marker.pose = markers.at(i).pose;
+          // this->mount_points.mount_oin.push_back(marker);
+          // MountPoint mp;
+          // mp.
+
+          // so the problem is.. i have a bunch of mount point markers now. but the script below takes only a MountPoints object. There is already a current MountPoints object, but it isn't updated with the current scene. How are things originally added into mount_points? oh ok, its originally added by the >> from the load config. So need a way to add mount points to the global mount points. Probably a function that does that..
         } 
    } 
    else 
@@ -328,7 +345,7 @@ void BuilditConfig::save(std::string& contents)
       yamlfile << YAML::Key << "mount_points";
       // Mount points needs to be updated from interactive server. 
       this->get_all_mount_point_markers_from_server();
-
+      
 
       yamlfile << YAML::Value << this->mount_points;
 

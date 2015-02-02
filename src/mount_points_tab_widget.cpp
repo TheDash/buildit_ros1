@@ -285,7 +285,7 @@ void MountPointsTabWidget::create_hide_mount_points_button()
 
 }
 
-void MountPointsTabWidget::create_mount_point_marker_from_yaml(std::string link_name, geometry_msgs::Pose pose)
+void MountPointsTabWidget::create_mount_point_marker_from_yaml(std::string parent_name, std::string link_name, geometry_msgs::Pose pose)
 {
    // Make service call
          ros::ServiceClient client = this->nh.serviceClient<buildit_ros::InteractiveMountPoint>("load_mount_point_marker");
@@ -427,7 +427,7 @@ void MountPointsTabWidget::create_mount_point_markers()
           {
                MountPointMarker marker = mp.mount_point_markers.at(i);
                ROS_INFO("Creating marker %s", marker.marker_name.c_str());
-               this->create_mount_point_marker_from_yaml(marker.marker_name, marker.pose);
+               this->create_mount_point_marker_from_yaml(marker.link_name, marker.marker_name, marker.pose);
           }
      }
      

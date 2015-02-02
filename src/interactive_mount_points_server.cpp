@@ -521,9 +521,9 @@ bool load_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, b
 {
 
    MountPointMarker marker;
-   marker.link_name = req.link_name;
+   marker.link_name = req.parent_name;
    marker.marker_name = req.link_name;
-   ROS_INFO("Loading marker %s from YAML file", marker.marker_name.c_str());
+   ROS_INFO("Loading marker %s on link location %s from YAML file", marker.marker_name.c_str(), marker.link_name.c_str());
    marker.number_of_markers++;
 
    geometry_msgs::Point p;
@@ -537,7 +537,7 @@ bool load_mount_point_marker(buildit_ros::InteractiveMountPoint::Request &req, b
    marker.pose = pose;
    marker.marker_id = 0;
 
-   marker_names.push_back(marker.link_name);
+   marker_names.push_back(marker.marker_name);
 
     // Create 6dof marker with that link name. 
    tf::Vector3 position = tf::Vector3( marker.pose.position.x, marker.pose.position.y , marker.pose.position.z);
