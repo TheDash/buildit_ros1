@@ -10,7 +10,9 @@
 #include <iostream>
 #include <QString>
 #include <QProcess>
+#include <ros/ros.h>
 
+#include <buildit_ros/GetInteractiveMarkers.h>
 #include <yaml-cpp/yaml.h>
 #include <yaml-cpp/iterator.h>
 #include <yaml-cpp/node.h>
@@ -73,7 +75,7 @@ class BuilditConfig
       void save(std::string& contents);
       void load_robot_description();
     private:
-
+      void get_all_mount_point_markers_from_server();
       std::string name;
       std::string model_path;
       // A map of links that have mount points, and where those mount points are positioned.

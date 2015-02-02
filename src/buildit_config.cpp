@@ -288,6 +288,22 @@ void BuilditConfig::load_robot_description()
       } 
 }
 
+void BuilditConfig::get_all_mount_point_markers_from_server()
+{
+   ros::NodeHandle nh;
+   ros::ServiceClient get_all_markers = nh.serviceClient<buildit_ros::GetInteractiveMarkers>("get_all_markers");
+   buildit_ros::GetInteractiveMarkers get_m;
+
+   if (get_all_markers.call(get_m))
+   {
+        ROS_INFO("Received %i markers", get_m.response.markers.size());
+   } 
+   else 
+   {
+      ROS_INFO("Failed to get mount point markers from server.");
+   }
+}
+
 void BuilditConfig::save(std::string& contents)
 {
       YAML::Emitter yamlfile;
@@ -304,6 +320,10 @@ void BuilditConfig::save(std::string& contents)
       yamlfile << YAML::Value << this->model_path;
 
       yamlfile << YAML::Key << "mount_points";
+      // Mount points needs to be updated from interactive server. 
+      this->get_all_mount_point_markers_from_server();
+
+
       yamlfile << YAML::Value << this->mount_points;
 
       contents = std::string(yamlfile.c_str());
