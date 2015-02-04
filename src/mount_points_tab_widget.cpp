@@ -93,8 +93,8 @@ void MountPointsTabWidget::create_save_model_button()
 void MountPointsTabWidget::clear_marker_server()
 {
    ROS_INFO("Clearing marker server");
-    ros::ServiceClient clear_markers = this->nh.serviceClient<buildit_ros::InteractiveMountPoint>("clear_all_markers");
-   buildit_ros::InteractiveMountPoint mp_msg;
+    ros::ServiceClient clear_markers = this->nh.serviceClient<buildit_msgs::InteractiveMountPoint>("clear_all_markers");
+   buildit_msgs::InteractiveMountPoint mp_msg;
 
    if (clear_markers.call(mp_msg))
    {
@@ -114,8 +114,8 @@ void MountPointsTabWidget::set_position_button_clicked()
    this->ypos = pos_y_tb->text().toDouble();
    this->zpos = pos_z_tb->text().toDouble();
 
-   ros::ServiceClient remove_marker = this->nh.serviceClient<buildit_ros::UpdateInteractiveMountPoint>("update_mount_point_marker");
-   buildit_ros::UpdateInteractiveMountPoint mp_msg;
+   ros::ServiceClient remove_marker = this->nh.serviceClient<buildit_msgs::UpdateInteractiveMountPoint>("update_mount_point_marker");
+   buildit_msgs::UpdateInteractiveMountPoint mp_msg;
    mp_msg.request.marker_name = edited_marker.marker_name;
    geometry_msgs::Pose p;
    p.position.x = this->xpos;
@@ -141,8 +141,8 @@ void MountPointsTabWidget::set_orientation_button_clicked()
    this->orp = or_p_tb->text().toDouble();
    this->ory = or_y_tb->text().toDouble();
 
-   ros::ServiceClient remove_marker = this->nh.serviceClient<buildit_ros::UpdateInteractiveMountPoint>("update_mount_point_marker");
-   buildit_ros::UpdateInteractiveMountPoint mp_msg;
+   ros::ServiceClient remove_marker = this->nh.serviceClient<buildit_msgs::UpdateInteractiveMountPoint>("update_mount_point_marker");
+   buildit_msgs::UpdateInteractiveMountPoint mp_msg;
    mp_msg.request.marker_name = edited_marker.marker_name;
    geometry_msgs::Pose p;
    
@@ -237,7 +237,7 @@ void MountPointsTabWidget::create_marker_orientation_editor()
    connect(this->set_orientation_button, SIGNAL(clicked()), this, SLOT(set_orientation_button_clicked()));
 }
 
-bool MountPointsTabWidget::set_marker_orientation_editor(buildit_ros::SetOrientation::Request &req, buildit_ros::SetOrientation::Response &res)
+bool MountPointsTabWidget::set_marker_orientation_editor(buildit_msgs::SetOrientation::Request &req, buildit_msgs::SetOrientation::Response &res)
 {
    orientation_editor->show();
    // Thread that waits until button is clicked from that editor, and then sets the values for the message and sends. 
@@ -246,7 +246,7 @@ bool MountPointsTabWidget::set_marker_orientation_editor(buildit_ros::SetOrienta
    return true;
 }
 
-bool MountPointsTabWidget::set_marker_position_editor(buildit_ros::SetPosition::Request &req, buildit_ros::SetPosition::Response &res)
+bool MountPointsTabWidget::set_marker_position_editor(buildit_msgs::SetPosition::Request &req, buildit_msgs::SetPosition::Response &res)
 {
    edited_marker = req.marker_info;
    position_editor->show();
@@ -288,8 +288,8 @@ void MountPointsTabWidget::create_hide_mount_points_button()
 void MountPointsTabWidget::create_mount_point_marker_from_yaml(std::string parent_name, std::string link_name, geometry_msgs::Pose pose)
 {
    // Make service call
-         ros::ServiceClient client = this->nh.serviceClient<buildit_ros::InteractiveMountPoint>("load_mount_point_marker");
-         buildit_ros::InteractiveMountPoint mp_msg;
+         ros::ServiceClient client = this->nh.serviceClient<buildit_msgs::InteractiveMountPoint>("load_mount_point_marker");
+         buildit_msgs::InteractiveMountPoint mp_msg;
          mp_msg.request.link_name = link_name;
          mp_msg.request.parent_name = link_name;
          mp_msg.request.parent_position.x = pose.position.x;
@@ -313,8 +313,8 @@ void MountPointsTabWidget::create_mount_point_marker_from_yaml(std::string paren
 void MountPointsTabWidget::create_mount_point_marker(std::string link_name, geometry_msgs::Pose pose)
 {
          // Make service call
-         ros::ServiceClient client = this->nh.serviceClient<buildit_ros::InteractiveMountPoint>("spawn_mount_point_marker");
-         buildit_ros::InteractiveMountPoint mp_msg;
+         ros::ServiceClient client = this->nh.serviceClient<buildit_msgs::InteractiveMountPoint>("spawn_mount_point_marker");
+         buildit_msgs::InteractiveMountPoint mp_msg;
          mp_msg.request.link_name = link_name;
          mp_msg.request.parent_name = link_name;
          mp_msg.request.parent_position.x = pose.position.x;
@@ -351,8 +351,8 @@ void MountPointsTabWidget::create_mount_points_button_clicked()
         Ogre::Vector3 position = StartScreen::visualizationDisplay->robot_state_display_->robot_->getRobot().getLink(link_name)->getPosition();
         
          // Make service call
-         ros::ServiceClient client = this->nh.serviceClient<buildit_ros::InteractiveMountPoint>("spawn_mount_point_marker");
-         buildit_ros::InteractiveMountPoint mp_msg;
+         ros::ServiceClient client = this->nh.serviceClient<buildit_msgs::InteractiveMountPoint>("spawn_mount_point_marker");
+         buildit_msgs::InteractiveMountPoint mp_msg;
          mp_msg.request.link_name = link_name;
          mp_msg.request.parent_name = link_name;
          mp_msg.request.parent_position.x = position.x;

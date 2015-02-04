@@ -3,16 +3,18 @@
 
 #include <string>
 #include <map>
-#include <geometry_msgs/Pose.h>
 #include <vector>
-#include <ros/ros.h>
 #include <fstream>
 #include <iostream>
-#include <QString>
+
 #include <QProcess>
+#include <QString>
+
 #include <ros/ros.h>
 
-#include <buildit_ros/GetInteractiveMarkers.h>
+#include <geometry_msgs/Pose.h>
+#include <buildit_msgs/GetInteractiveMarkers.h>
+
 #include <yaml-cpp/yaml.h>
 #include <yaml-cpp/iterator.h>
 #include <yaml-cpp/node.h>

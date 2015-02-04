@@ -1,6 +1,8 @@
 #ifndef MOUNT_POINTS_TAB_WIDGET_H
 #define MOUNT_POINTS_TAB_WIDGET_H
 
+#include <fstream>
+
 #include <QDoubleValidator>
 #include <QLineEdit>
 #include <QWidget>
@@ -13,24 +15,23 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
-#include <moveit/robot_model/robot_model.h>
-#include <moveit/robot_model/link_model.h>
-#include <fstream>
 
+#include <ros/ros.h>
 #include <tf/tf.h>
+#include <moveit/robot_model/link_model.h>
+#include <moveit/robot_model/robot_model.h>
 #include <tf/transform_broadcaster.h>
 #include <interactive_markers/interactive_marker_server.h>
 #include <interactive_markers/menu_handler.h>
-#include <ros/ros.h>
 #include <geometry_msgs/Vector3.h>
 #include <rviz/robot/robot.h>
 #include <rviz/robot/robot_link.h>
 #include <rviz/visualization_manager.h>
 
-#include <buildit_ros/InteractiveMountPoint.h>
-#include <buildit_ros/SetOrientation.h>
-#include <buildit_ros/SetPosition.h>
-#include <buildit_ros/UpdateInteractiveMountPoint.h>
+#include <buildit_msgs/InteractiveMountPoint.h>
+#include <buildit_msgs/SetOrientation.h>
+#include <buildit_msgs/SetPosition.h>
+#include <buildit_msgs/UpdateInteractiveMountPoint.h>
 #include <buildit_ros/buildit_config.h>
 
 #include <visualization_msgs/InteractiveMarkerControl.h>
@@ -45,8 +46,8 @@ Q_OBJECT
     public: 
         MountPointsTabWidget(QWidget * parent = 0);
         ~MountPointsTabWidget();
-        bool set_marker_orientation_editor(buildit_ros::SetOrientation::Request&, buildit_ros::SetOrientation::Response&);
-        bool set_marker_position_editor(buildit_ros::SetPosition::Request&, buildit_ros::SetPosition::Response&);
+        bool set_marker_orientation_editor(buildit_msgs::SetOrientation::Request&, buildit_msgs::SetOrientation::Response&);
+        bool set_marker_position_editor(buildit_msgs::SetPosition::Request&, buildit_msgs::SetPosition::Response&);
   
 
     private:

@@ -1,23 +1,7 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(buildit_ros)
 
-find_package(catkin REQUIRED std_msgs moveit_ros_visualization rviz visualization_msgs message_generation roscpp pluginlib visualization_marker_tutorials)
-
-add_service_files(
-   FILES
-   InteractiveMountPoint.srv
-   SetOrientation.srv
-   SetPosition.srv
-   UpdateInteractiveMountPoint.srv
-   GetInteractiveMarkers.srv
-)
-
-add_message_files(
-  FILES
-  MountPointMarker.msg
-)
-
-generate_messages(DEPENDENCIES std_msgs geometry_msgs visualization_msgs)
+find_package(catkin REQUIRED std_msgs moveit_ros_visualization rviz roscpp pluginlib visualization_marker_tutorials buildit_msgs)
 
 catkin_package(
 )
@@ -56,12 +40,11 @@ set(SOURCE_FILES
 add_library(buildit_config src/buildit_config.cpp)
 target_link_libraries(buildit_config ${catkin_LIBRARIES} yaml-cpp ${QT_LIBRARIES})
 
-add_executable(interactive_mount_points_server src/interactive_mount_points_server.cpp )
-target_link_libraries(interactive_mount_points_server ${catkin_LIBRARIES} ${QT_LIBRARIES} buildit_config yaml-cpp)
-add_dependencies(interactive_mount_points_server interactive_mount_points_server_gencpp ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
+#add_executable(interactive_mount_points_server src/interactive_mount_points_server.cpp )
+#target_link_libraries(interactive_mount_points_server ${catkin_LIBRARIES} ${QT_LIBRARIES} buildit_config yaml-cpp)
+#add_dependencies(interactive_mount_points_server interactive_mount_points_server_gencpp ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_gencpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
-
 #add_library(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${catkin_LIBRARIES} default_plugin ${QT_LIBRARIES} yaml-cpp)
 add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})

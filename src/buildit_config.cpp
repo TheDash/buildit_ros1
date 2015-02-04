@@ -292,15 +292,15 @@ void BuilditConfig::load_robot_description()
 void BuilditConfig::get_all_mount_point_markers_from_server()
 {
    ros::NodeHandle nh;
-   ros::ServiceClient get_all_markers = nh.serviceClient<buildit_ros::GetInteractiveMarkers>("get_all_markers");
-   buildit_ros::GetInteractiveMarkers get_m;
+   ros::ServiceClient get_all_markers = nh.serviceClient<buildit_msgs::GetInteractiveMarkers>("get_all_markers");
+   buildit_msgs::GetInteractiveMarkers get_m;
 
    //this->mount_points.mount_points.clear();
 
    if (get_all_markers.call(get_m))
    {
         ROS_INFO("Received %i markers", get_m.response.markers.size());
-        std::vector<buildit_ros::MountPointMarker> markers;
+        std::vector<buildit_msgs::MountPointMarker> markers;
         markers = get_m.response.markers;
     
         std::map<std::string, MountPoint> mount_points;
