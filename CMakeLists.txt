@@ -1,9 +1,10 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(buildit_ros)
 
-find_package(catkin REQUIRED std_msgs moveit_ros_visualization rviz roscpp pluginlib visualization_marker_tutorials buildit_msgs)
+find_package(catkin REQUIRED COMPONENTS std_msgs moveit_ros_visualization rviz roscpp pluginlib visualization_marker_tutorials buildit_msgs)
 
 catkin_package(
+   LIBRARIES buildit_config
 )
 
 
@@ -39,6 +40,7 @@ set(SOURCE_FILES
 
 add_library(buildit_config src/buildit_config.cpp)
 target_link_libraries(buildit_config ${catkin_LIBRARIES} yaml-cpp ${QT_LIBRARIES})
+add_dependencies(buildit_config buildit_msgs_generate_messages_cpp buildit_msgs_gencpp ${catkin_EXPORTED_TARGETS})
 
 #add_executable(interactive_mount_points_server src/interactive_mount_points_server.cpp )
 #target_link_libraries(interactive_mount_points_server ${catkin_LIBRARIES} ${QT_LIBRARIES} buildit_config yaml-cpp)
@@ -50,7 +52,7 @@ target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${catkin_LIBRARIES} defaul
 add_dependencies(${PROJECT_NAME} ${catkin_EXPORTED_TARGETS})
 
 install(TARGETS
-	${PROJECT_NAME}
+	${PROJECT_NAME} buildit_config
 	ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 	LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
 	RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
