@@ -1,0 +1,1 @@
+Place model meshes in STL format here.  Models should be exported in meters, preferably with an origin defined in a useful place on the body.

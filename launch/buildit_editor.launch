@@ -1,8 +1,0 @@
-<launch>
-
-
-<node pkg="buildit_ros" type="buildit_ros" name="buildit_ros"/>
-<node pkg="buildit_ros" type="interactive_mount_points_server" name="interactive_mount_points_server"/>
-
-
-</launch>

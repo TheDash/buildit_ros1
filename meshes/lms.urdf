@@ -1,0 +1,13 @@
+<robot name="materials">
+	<link name="base_link">
+		<visual>
+			<geometry>
+				<mesh filename="package://robot_mod_rviz_plugin/meshes/LMS1xx.STL"/>
+			</geometry>
+			
+			<material name="blue">
+				<color rgba="0.45 0.45 0.45 1"/>
+			</material>
+		</visual>
+	</link>
+</robot>

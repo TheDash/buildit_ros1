@@ -36,22 +36,40 @@
 #include "rviz/render_panel.h"
 #include "rviz/display.h"
 
-#include <buildit_ros/myviz.h>
+#include <robot_mod_rviz_plugin/myviz.h>
 
 // BEGIN_TUTORIAL
 // Constructor for MyViz.  This does most of the work of the class.
 MyViz::MyViz( QWidget* parent )
   : QWidget( parent )
 {
+  // Construct and lay out labels and slider controls.
+  QLabel* thickness_label = new QLabel( "Line Thickness" );
+  QSlider* thickness_slider = new QSlider( Qt::Horizontal );
+  thickness_slider->setMinimum( 1 );
+  thickness_slider->setMaximum( 100 );
+  QLabel* cell_size_label = new QLabel( "Cell Size" );
+  QSlider* cell_size_slider = new QSlider( Qt::Horizontal );
+  cell_size_slider->setMinimum( 1 );
+  cell_size_slider->setMaximum( 100 );
+  QGridLayout* controls_layout = new QGridLayout();
+  controls_layout->addWidget( thickness_label, 0, 0 );
+  controls_layout->addWidget( thickness_slider, 0, 1 );
+  controls_layout->addWidget( cell_size_label, 1, 0 );
+  controls_layout->addWidget( cell_size_slider, 1, 1 );
 
   // Construct and lay out render panel.
   render_panel_ = new rviz::RenderPanel();
   QVBoxLayout* main_layout = new QVBoxLayout;
-  //main_layout->addLayout( controls_layout );
+  main_layout->addLayout( controls_layout );
   main_layout->addWidget( render_panel_ );
 
   // Set the top-level layout for this MyViz widget.
   setLayout( main_layout );
+
+  // Make signal/slot connections.
+  connect( thickness_slider, SIGNAL( valueChanged( int )), this, SLOT( setThickness( int )));
+  connect( cell_size_slider, SIGNAL( valueChanged( int )), this, SLOT( setCellSize( int )));
 
   // Next we initialize the main RViz classes.
   //
@@ -64,41 +82,26 @@ MyViz::MyViz( QWidget* parent )
   manager_->initialize();
   manager_->startUpdate();
 
-  manager_->setFixedFrame (QString::fromStdString("base_link"));
-  robot_state_display_ = new moveit_rviz_plugin::RobotStateDisplay();
-  robot_state_display_->setName("Robot State");
+  // Create a Grid display.
+  grid_ = manager_->createDisplay( "rviz/Grid", "adjustable grid", true );
+  ROS_ASSERT( grid_ != NULL );
 
-  manager_->addDisplay(robot_state_display_, true);
+  // Create a robot model display. 
+  robot_model_ = manager_->createDisplay("rviz/RobotModel", "Robot Model", true);
+  ROS_ASSERT( robot_model_ != NULL);
 
-  // Create an interaction tool..
-  rviz::ToolManager * tm = manager_->getToolManager();
-  tm->addTool( "rviz/Interact");
-  rviz::Tool * default_tool = tm->getTool(1);
-  tm->setDefaultTool(default_tool);
-  tm->setCurrentTool(default_tool);  
-  QStringList tools = tm->getToolClasses();
-  ROS_INFO("The current tools are");
-  for (int i = 0; i < tools.size(); i++)
-  {
-      ROS_INFO("Tool: %s", tools.at(i).toStdString().c_str());
-  }
+  // Configure the GridDisplay the way we like it.
+  grid_->subProp( "Line Style" )->setValue( "Billboards" );
+  grid_->subProp( "Color" )->setValue( Qt::yellow );
 
-  // Add the marker display here 
-  interactive_marker_display_ = new rviz::InteractiveMarkerDisplay();
-  interactive_marker_display_->setTopic(QString("/interactive_mount_points_server/update"), QString());
+  const char * str = "base_footprint";
+  QVariant base_fp = QVariant(str);
+  grid_->subProp( "Reference Frame" )->setValue(base_fp);
+  ROS_INFO("Current reference frame %s", grid_->subProp("Reference Frame")->getValue().toString().toStdString().c_str());
 
-
-
-
-  manager_->addDisplay(interactive_marker_display_, true);
-
-  // Set robot description
-  robot_state_display_->subProp("Robot Description")->setValue(QString::fromStdString( "robot_description" ));
-
-  // Zoom into robot
-  rviz::ViewController* view = manager_->getViewManager()->getCurrent();
-  view->subProp( "Distance" )->setValue( 4.0f );
-
+  // Initialize the slider values.
+  thickness_slider->setValue( 25 );
+  cell_size_slider->setValue( 10 );
 }
 
 // Destructor.

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<robot name="lms1xx_7">
+	<joint name="300Arch_to_lms1xx_7" type="fixed">
+		<parent link="300Arch"/>
+		<child link="lms1xx_7"/>
+		<origin xyz="0.0 0.0 0.04" rpy="3.14159265359 0.0 0.0"/>
+	</joint>
+
+	<link name="lms1xx_7">
+		<visual>
+			<geometry>
+				<mesh filename="package://robot_mod_rviz_plugin/meshes/lms1xx.STL"/>
+			</geometry>
+			<material name="velodyneGray">
+				<color rgba="0.81 0.81 0.81 1"/>
+			</material>
+		</visual>
+	</link>
+</robot>

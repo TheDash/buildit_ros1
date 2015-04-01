@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<robot name="300Arch">
+	<joint name="topPlate_to_300Arch" type="fixed">
+		<parent link="topPlate"/>
+		<child link="300Arch"/>
+		<origin xyz="-0.03 0.0 0.3" rpy="0.0 0.0 0.0"/>
+	</joint>
+
+	<link name="300Arch">
+		<visual>
+			<geometry>
+				<mesh filename="package://robot_mod_rviz_plugin/meshes/300Arch.STL"/>
+			</geometry>
+			<material name="black">
+				<color rgba="0.6 0.6 0.6 1"/>
+			</material>
+		</visual>
+	</link>
+</robot>

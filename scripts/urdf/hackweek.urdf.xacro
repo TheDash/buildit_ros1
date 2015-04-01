@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="hackweek">
+
+<xacro:include filename="$(find husky_description)/urdf/base.urdf.xacro" />
+<xacro:include filename="$(find robot_mod_rviz_plugin)/urdf/topPlate.urdf" />
+<xacro:include filename="$(find robot_mod_rviz_plugin)/urdf/lms1xx_2.urdf" />
+<xacro:include filename="$(find robot_mod_rviz_plugin)/urdf/300Arch.urdf" />
+
+</robot>

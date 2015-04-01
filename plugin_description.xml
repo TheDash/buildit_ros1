@@ -1,0 +1,9 @@
+<library path="lib/librobot_mod_rviz_plugin">
+  <class name="robot_mod_rviz_plugin/RobotMod"
+         type="robot_mod_plugin::RobotModPanel"
+         base_class_type="rviz::Panel">
+    <description>
+      A panel widget allowing modification of placement of sensors on a robot.
+    </description>
+  </class>
+</library>
